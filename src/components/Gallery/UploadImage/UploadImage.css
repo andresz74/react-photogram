@@ -1,0 +1,126 @@
+.uploadToolWrap {
+	align-self: flex-start;
+	background-color: #f1f2f7;
+	border-radius: 0.5em;
+	box-shadow: 0 0 1.5em -0.5em #333;
+	color: #333;
+	display: flex;
+	flex-direction: column;
+	min-height: 300px;
+	width: 300px;
+}
+
+.uploadToolHeader {
+	background-color: #333;
+	border-top-left-radius: 0.5em;
+	border-top-right-radius: 0.5em;
+	color: #f1f1f1;
+	display: flex;
+	flex-direction: row;
+	font-size: 0.75em;
+	padding: 1.75em 2.5em;
+	text-transform: uppercase;
+}
+
+.headerTitle {
+	display: flex;
+	flex: 1 0 100%;
+}
+.headerCloseBtn {
+	display: flex;
+}
+
+.headerCloseBtn a {
+	color: #f1f2f7;
+}
+
+.uploadToolBody {
+	padding: 40px 30px;
+}
+
+.progressBar {
+	-webkit-appearance: none;
+	height: 0.5em;
+	margin-bottom: 2em;
+	width: 100%;
+}
+
+.progressBar::-webkit-progress-bar {
+	background-color: rgba(51, 51, 51, 0.125);
+	border-radius: 4px;
+	/* box-shadow: 1px 1px 4px rgba(51, 51, 51, 0.5); */
+}
+
+.progressBar::-webkit-progress-value {
+	background-color: #333;
+	border-radius: 4px;
+}
+
+.inputFileWrap {
+	cursor: pointer;
+	margin-bottom: 2em;
+	position: relative;
+}
+
+.inputFile {
+	width: 100%;
+}
+
+.inputFileCustom {
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	z-index: 5;
+	padding: 0.5rem 1rem;
+	line-height: 1.5;
+	color: #555;
+	background-color: #fff;
+	border: 0.075rem solid #ddd;
+	border-radius: 0.25rem;
+	box-shadow: inset 0 0.2rem 0.4rem rgba(0, 0, 0, 0.05);
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.inputFileCustom:after {
+	content: 'Choose file...';
+}
+.inputFileCustom:before {
+	position: absolute;
+	top: -0.075rem;
+	right: -0.075rem;
+	bottom: -0.075rem;
+	z-index: 6;
+	display: block;
+	content: 'Browse';
+	padding: 0.5rem 1rem;
+	line-height: 1.5;
+	color: #555;
+	background-color: #eee;
+	border: 0.075rem solid #ddd;
+	border-radius: 0 0.25rem 0.25rem 0;
+}
+.inputFileWrap input:focus ~ .inputFileCustom {
+	box-shadow: 0 0 0 0.075rem #fff, 0 0 0 0.2rem #0074d9;
+}
+
+.buttonWrap {
+	margin-bottom: 2em;
+}
+
+.fileUrl {
+	display: block;
+	font-size: 0.5em;
+	margin-bottom: 2em;
+	word-break: break-all;
+}
+
+.filePreview {
+	border-radius: 0.25em;
+	box-shadow: 0 0 1em -0.5em #333;
+	height: auto;
+	width: 100%;
+}
