@@ -52,6 +52,9 @@ export const UploadImage: React.FC = () => {
 								imgName: image.name,
 								imgUploadDate: Date.now(),
 							});
+						})
+						.catch(error => {
+							console.error(error);
 						});
 				},
 			);
@@ -65,7 +68,9 @@ export const UploadImage: React.FC = () => {
 			<div className="uploadToolHeader">
 				<div className="headerTitle">Upload Files</div>
 				<div className="headerCloseBtn">
-					<Link to="/">X</Link>
+					<Link to="/">
+						<i className="icofont-close-line"></i>
+					</Link>
 				</div>
 			</div>
 			<div className="uploadToolBody">
@@ -81,7 +86,7 @@ export const UploadImage: React.FC = () => {
 					</button>
 				</div>
 				<div>
-					<span className="fileUrl">{imageUrl}</span>
+					{imageUploadProgress === 100 && <span className="fileUrl">{'Uploaded!'}</span>}
 					{imageUrl && <img className="filePreview" src={imageUrl} alt="" />}
 				</div>
 			</div>

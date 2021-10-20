@@ -50,7 +50,7 @@ export const ShowGallery: React.FC = () => {
 				{imagesList.map((imageItem: ImageInterface, index: number) => {
 					return (
 						<div className="App-album-photo" key={index}>
-							<img src={imageItem.imgSrc} alt={imageItem.imgSrc} />
+							<img src={imageItem.imgSrc} alt={imageItem.imgName} />
 						</div>
 					);
 				})}

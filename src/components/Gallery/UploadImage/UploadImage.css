@@ -28,6 +28,7 @@
 }
 .headerCloseBtn {
 	display: flex;
+	font-size: 1.5em;
 }
 
 .headerCloseBtn a {
