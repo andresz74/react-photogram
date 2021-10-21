@@ -1,9 +1,6 @@
 import React from 'react';
-import firebase from 'firebase/app';
-import 'firebase/firestore';
-import 'firebase/auth';
-import 'firebase/storage';
-import { firebaseConfig, imagesDbCollection } from 'firebase.configuration';
+
+import { db, imagesDbCollection } from 'firebase.configuration';
 import './ShowGallery.css';
 
 export interface PhotogramInterface {
@@ -15,14 +12,6 @@ export interface ImageInterface {
 	imgName: string;
 }
 
-// Initialize Firebase if it hasn't been initialize by other component
-let app;
-if (!firebase.apps.length) {
-	app = firebase.initializeApp(firebaseConfig);
-}
-
-// Initialize Firebase Storage
-const db = firebase.firestore(app);
 const imagesRef = db.collection(imagesDbCollection);
 
 const getImageList = async () => {

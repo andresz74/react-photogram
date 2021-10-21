@@ -1,3 +1,8 @@
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
+import 'firebase/storage';
+
 export const firebaseConfig = {
 	apiKey: 'AIzaSyD3C9y6Z5NJKPkZ_-0wn0srSzLjQ1MeZuQ',
 	authDomain: 'photograma-c2078.firebaseapp.com',
@@ -11,3 +16,18 @@ export const firebaseConfig = {
 export const firebaseStorageUrl = 'gs://photograma-c2078.appspot.com';
 
 export const imagesDbCollection = 'imagesArray';
+
+let app;
+if (!firebase.apps.length) {
+	app = firebase.initializeApp(firebaseConfig);
+}
+
+// Initialize Firebase Firestore
+const db = firebase.firestore(app);
+
+// Initialize Firebase Storage
+const storage = firebase.storage();
+
+const auth = firebase.auth();
+
+export { auth, db, storage };

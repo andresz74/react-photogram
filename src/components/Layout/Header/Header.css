@@ -27,6 +27,10 @@
 	color: #333;
 }
 
+.itemClick {
+	cursor: pointer;
+}
+
 .siteBranding {
 	margin: 1em 0;
 	font-size: 2em;
