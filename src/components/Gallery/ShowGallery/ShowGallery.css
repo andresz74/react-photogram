@@ -1,0 +1,24 @@
+.albumWrap {
+	max-width: 935px;
+	width: 100%;
+}
+
+.albumRow {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	margin-bottom: 28px;
+}
+
+.photoWrap {
+	display: flex;
+	margin-bottom: 28px;
+	position: relative;
+}
+
+.photoWrap img {
+	height: 293px;
+	object-fit: cover;
+	width: 293px;
+}

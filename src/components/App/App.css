@@ -14,30 +14,6 @@
 	width: 100%;
 }
 
-.App-album {
-	max-width: 935px;
-	width: 100%;
-}
-
-.App-album-row {
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-	justify-content: space-between;
-	margin-bottom: 28px;
-}
-
-.App-album-photo {
-	display: flex;
-	margin-bottom: 28px;
-}
-
-.App-album-photo img {
-	height: 293px;
-	object-fit: cover;
-	width: 293px;
-}
-
 .App-album-photo:last-child {
 	margin-right: 0;
 }

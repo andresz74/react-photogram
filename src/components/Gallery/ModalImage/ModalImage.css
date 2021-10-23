@@ -1,0 +1,20 @@
+.photoModalOverlay {
+    background-color: rgba(51, 51, 51, 0.75);
+    inset: 0px;
+	position: fixed;
+    display: flex;
+}
+
+.photoModal {
+    display: flex;
+    margin: auto;
+}
+
+.photoModalWrap {
+}
+
+.photoModalWrap img {
+    height: 600px;
+    min-height:450px;
+    max-width: 935px;
+}

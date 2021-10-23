@@ -1,0 +1,1 @@
+export { DeleteImage } from './DeleteImage';
