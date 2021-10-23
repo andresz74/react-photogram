@@ -1,21 +1,23 @@
 import React from 'react';
-import Modal from 'react-modal';
+import { CoreModal } from 'components';
 import './ModalImage.css';
+import { title } from 'process';
 
 export interface ComponentProps {
-	imgAlt: string;
+	imgName: string;
 	imgSrc: string;
 	isOpen: boolean;
+	onClose: () => void;
 }
 
-export const ModalImage: React.FC<ComponentProps> = ({ imgAlt, imgSrc, isOpen }) => {
+export const ModalImage: React.FC<ComponentProps> = ({ imgName, imgSrc, isOpen, onClose }) => {
 	return (
-		<Modal className="photoModal" overlayClassName="photoModalOverlay" isOpen={isOpen} ariaHideApp={false}>
-            <div className="photoModalWrap">
-			    <img src={imgSrc} alt={imgAlt} />
-            </div>
-		</Modal>
+		<CoreModal isOpen={isOpen} onRequestClose={onClose}>
+			<div className="photoModalWrap">
+				<img src={imgSrc} alt={imgName} />
+			</div>
+		</CoreModal>
 	);
 };
 
-ModalImage.displayName = "ModalImage";
+ModalImage.displayName = 'ModalImage';

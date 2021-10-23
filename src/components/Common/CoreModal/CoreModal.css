@@ -1,0 +1,40 @@
+.modalCore {
+	display: flex;
+	margin: auto;
+	flex-direction: column;
+}
+
+.modalCore:focus-visible {
+	outline: none;
+}
+
+.modalOverlay {
+	background-color: rgba(51, 51, 51, 0.75);
+	inset: 0px;
+	position: fixed;
+	display: flex;
+}
+
+.modalHeader {
+	color: #f1f2f7;
+	cursor: pointer;
+	display: flex;
+	flex-direction: row;
+    flex-wrap: nowrap;
+	font-size: 2.5em;
+	justify-content: flex-end;
+    margin-bottom: .25em;
+    max-width: 935px;
+	min-height: 1em;
+	position: relative;
+}
+
+.modalTitle {
+	display: flex;
+	font-size: .5em;
+}
+
+.modalCloseIco {
+	position: absolute;
+	right: 0;
+}

@@ -1,0 +1,1 @@
+export { CoreModal } from './CoreModal';

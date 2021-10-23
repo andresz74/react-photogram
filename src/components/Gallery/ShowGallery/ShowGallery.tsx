@@ -61,7 +61,7 @@ export const ShowGallery: React.FC = () => {
 				})}
 			</div>
 			{modalImage !== null && (
-				<ModalImage imgSrc={modalImage.imgSrc} imgAlt={modalImage.imgName} isOpen={modalIsOpen} />
+				<ModalImage imgSrc={modalImage.imgSrc} imgName={modalImage.imgName} isOpen={modalIsOpen} onClose={closeModal} />
 			)}
 		</div>
 	);

@@ -49,7 +49,6 @@
 .progressBar::-webkit-progress-bar {
 	background-color: rgba(51, 51, 51, 0.125);
 	border-radius: 4px;
-	/* box-shadow: 1px 1px 4px rgba(51, 51, 51, 0.5); */
 }
 
 .progressBar::-webkit-progress-value {
@@ -84,28 +83,6 @@
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
-}
-
-.inputFileCustom:after {
-	content: 'Choose file...';
-}
-.inputFileCustom:before {
-	position: absolute;
-	top: -0.075rem;
-	right: -0.075rem;
-	bottom: -0.075rem;
-	z-index: 6;
-	display: block;
-	content: 'Browse';
-	padding: 0.5rem 1rem;
-	line-height: 1.5;
-	color: #555;
-	background-color: #eee;
-	border: 0.075rem solid #ddd;
-	border-radius: 0 0.25rem 0.25rem 0;
-}
-.inputFileWrap input:focus ~ .inputFileCustom {
-	box-shadow: 0 0 0 0.075rem #fff, 0 0 0 0.2rem #0074d9;
 }
 
 .buttonWrap {
