@@ -1,6 +1,13 @@
 .albumWrap {
+	display: flex;
+	flex-direction: column;
 	max-width: 935px;
 	width: 100%;
+}
+
+.albumHeader {
+	display: flex;
+	margin-bottom: 2em;
 }
 
 .albumRow {

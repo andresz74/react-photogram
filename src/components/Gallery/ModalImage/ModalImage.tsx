@@ -1,7 +1,6 @@
 import React from 'react';
 import { CoreModal } from 'components';
 import './ModalImage.css';
-import { title } from 'process';
 
 export interface ComponentProps {
 	imgName: string;
