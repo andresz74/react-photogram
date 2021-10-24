@@ -35,6 +35,7 @@ export const UploadImage: React.FC = () => {
 						.then(url => {
 							setImageUrl(url);
 							db.collection(imagesDbCollection).add({
+								imgArchived: false,
 								imgSrc: url,
 								imgName: image.name,
 								imgUploadDate: Date.now(),

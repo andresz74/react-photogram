@@ -1,18 +1,8 @@
 import React from 'react';
 import { db, imagesDbCollection } from 'firebase.configuration';
-import { AuthContext, DeleteImage, ModalImage, OverlayLayer } from 'components';
+import { ArchiveImage, AuthContext, DeleteImage, ModalImage, OverlayLayer } from 'components';
+import { ImageInterface, PhotogramInterface } from 'interface';
 import './ShowGallery.css';
-
-export interface PhotogramInterface {
-	imagesArray: ImageInterface[];
-}
-
-export interface ImageInterface {
-	imgId: string;
-	imgName: string;
-	imgSrc: string;
-	imgUploadDate: number;
-}
 
 const imagesRef = db.collection(imagesDbCollection);
 
@@ -22,6 +12,7 @@ const getImageList = async () => {
 	snapshot.forEach(doc => {
 		data.push({
 			imgId: doc.id,
+			imgArchived: doc.data().imgArchived,
 			imgUploadDate: doc.data().imgUploadDate,
 			imgSrc: doc.data().imgSrc,
 			imgName: doc.data().imgName,
@@ -30,7 +21,7 @@ const getImageList = async () => {
 	return data;
 };
 
-export const ShowGallery: React.FC = () => {
+const ShowGalleryInternal: React.FC = () => {
 	const [modalIsOpen, setModalIsOpen] = React.useState<boolean>(false);
 	const [modalImage, setModalImage] = React.useState<ImageInterface | null>(null);
 	const user = React.useContext(AuthContext);
@@ -50,10 +41,12 @@ export const ShowGallery: React.FC = () => {
 		<div className="albumWrap">
 			<div className="albumRow">
 				{imagesList.map((imageItem: ImageInterface, index: number) => {
-					return (
+					return !imageItem.imgArchived && (
 						<div className="photoWrap" key={index}>
-							<OverlayLayer onClick={() => openModal(imageItem)}>
+							<OverlayLayer>
+								{user && <ArchiveImage imgData={imageItem} />}
 								{user && <DeleteImage imgData={imageItem} />}
+								<div className="photoActionLayer" onClick={() => openModal(imageItem)}></div>
 							</OverlayLayer>
 							<img src={imageItem.imgSrc} alt={imageItem.imgName} />
 						</div>
@@ -67,4 +60,6 @@ export const ShowGallery: React.FC = () => {
 	);
 };
 
-ShowGallery.displayName = 'ShowGallery';
+ShowGalleryInternal.displayName = 'ShowGallery';
+const ShowGallery = React.memo(ShowGalleryInternal);
+export { ShowGallery };

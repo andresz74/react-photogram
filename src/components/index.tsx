@@ -1,11 +1,12 @@
 import { App } from './App';
 import { AuthContext, AuthProvider, CoreModal } from './Common';
-import { DeleteImage, OverlayLayer, ModalImage, ShowGallery, UploadImage } from './Gallery';
+import { ArchiveImage, DeleteImage, OverlayLayer, ModalImage, ShowGallery, UploadImage } from './Gallery';
 import { Footer, Header } from './Layout';
 import { Login } from './Login';
 
 export {
 	App,
+	ArchiveImage,
 	AuthContext,
 	AuthProvider,
 	CoreModal,

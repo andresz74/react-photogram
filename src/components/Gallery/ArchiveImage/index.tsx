@@ -1,0 +1,1 @@
+export { ArchiveImage } from './ArchiveImage';
