@@ -1,6 +1,6 @@
 import React from 'react';
 import { db, imagesDbCollection } from 'firebase.configuration';
-import { ImageInterface } from 'interface';
+import { ImageInterface } from 'type';
 import './ArchiveImage.css';
 
 export interface ComponentProps {

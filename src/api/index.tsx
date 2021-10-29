@@ -1,0 +1,1 @@
+export { getImageList } from './getImages';

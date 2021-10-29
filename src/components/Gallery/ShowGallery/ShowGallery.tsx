@@ -1,57 +1,56 @@
 import React from 'react';
-import { db, imagesDbCollection } from 'firebase.configuration';
-import { ArchiveImage, AuthContext, DeleteImage, ModalImage, OverlayLayer } from 'components';
-import { ImageInterface } from 'interface';
+import { useDispatch, useSelector } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { ArchiveImage, AuthContext, ModalImage, OverlayLayer } from 'components';
+import { actionCreators } from 'state';
+import { RootState } from 'state/reducers';
+import { ImageInterface } from 'type';
 import './ShowGallery.css';
 
-const imagesRef = db.collection(imagesDbCollection);
-
-const getImageList = async () => {
-	const snapshot = await imagesRef.get();
-	const data: ImageInterface[] = [];
-	snapshot.forEach(doc => {
-		data.push({
-			imgId: doc.id,
-			imgArchived: doc.data().imgArchived,
-			imgUploadDate: doc.data().imgUploadDate,
-			imgSrc: doc.data().imgSrc,
-			imgName: doc.data().imgName,
-		});
-	});
-	return data;
-};
-
 const ShowGalleryInternal: React.FC = () => {
+	const user = React.useContext(AuthContext);
 	const [modalIsOpen, setModalIsOpen] = React.useState<boolean>(false);
 	const [modalImage, setModalImage] = React.useState<ImageInterface | null>(null);
-	const user = React.useContext(AuthContext);
 	const [imagesList, setImagesList] = React.useState<ImageInterface[]>([]);
-	const [showArchviedImages, setShowArchivedImages] = React.useState<boolean>(false);
+	
+	// To hide archived images
+	const [showArchivedImages, setShowArchivedImages] = React.useState<boolean>(false);
 
 	const openModal = (imageItem: ImageInterface) => {
 		setModalImage(imageItem);
 		setModalIsOpen(true);
 	};
+
 	const closeModal = () => setModalIsOpen(false);
 
+	// Manage the images of the album
 	const handledImageList = (list: ImageInterface[], showArchived: boolean) => {
 		!showArchived ? setImagesList(list) : setImagesList(list.filter(item => item.imgArchived !== true));
 	};
 
+	const imagesData = useSelector((state: RootState) => state.images);
+	const dispatch = useDispatch();
+	const { loadImages } = bindActionCreators(actionCreators, dispatch);
+
 	React.useEffect(() => {
-		getImageList().then(results => handledImageList(results, showArchviedImages));
-	}, [showArchviedImages]);
+		try {
+			loadImages();
+			handledImageList(imagesData, showArchivedImages);
+		} catch (error) {
+			console.log(error);
+		}
+	}, [showArchivedImages]);
 
 	return (
 		<div className="albumWrap">
-			<div className="albumHeader">
+			{/* <div className="albumHeader">
 				<span
 					style={{ display: 'inline-block' }}
 					onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => setShowArchivedImages(true)}
 				>
 					Show Archived
 				</span>
-			</div>
+			</div> */}
 			<div className="albumRow">
 				{imagesList.map((imageItem: ImageInterface, index: number) => {
 					return (
@@ -59,7 +58,6 @@ const ShowGalleryInternal: React.FC = () => {
 							<div className="photoWrap" key={index}>
 								<OverlayLayer>
 									{user && <ArchiveImage imgData={imageItem} />}
-									{user && <DeleteImage imgData={imageItem} />}
 									<div className="photoActionLayer" onClick={() => openModal(imageItem)}></div>
 								</OverlayLayer>
 								<img src={imageItem.imgSrc} alt={imageItem.imgName} />
@@ -75,6 +73,6 @@ const ShowGalleryInternal: React.FC = () => {
 	);
 };
 
-ShowGalleryInternal.displayName = 'ShowGallery';
 const ShowGallery = React.memo(ShowGalleryInternal);
+ShowGallery.displayName = 'ShowGallery';
 export { ShowGallery };

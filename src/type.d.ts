@@ -1,11 +1,7 @@
 export interface ImageInterface {
 	imgArchived: boolean;
-	imgId: string;
+	imgId?: string;
 	imgName: string;
 	imgSrc: string;
 	imgUploadDate: number;
-}
-
-export interface PhotogramInterface {
-	imagesArray: ImageInterface[];
 }

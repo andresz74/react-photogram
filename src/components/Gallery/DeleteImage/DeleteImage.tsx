@@ -1,6 +1,6 @@
 import React from 'react';
 import { db, imagesDbCollection, storage } from 'firebase.configuration';
-import { ImageInterface } from 'interface';
+import { ImageInterface } from 'type';
 import './DeleteImage.css';
 
 export interface ComponentProps {
