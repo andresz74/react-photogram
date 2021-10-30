@@ -1,6 +1,5 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { ArchiveImage, AuthContext, ModalImage, OverlayLayer } from 'components';
 import { actionCreators } from 'state';
 import { RootState } from 'state/reducers';
@@ -11,8 +10,7 @@ const ShowGalleryInternal: React.FC = () => {
 	const user = React.useContext(AuthContext);
 	const [modalIsOpen, setModalIsOpen] = React.useState<boolean>(false);
 	const [modalImage, setModalImage] = React.useState<ImageInterface | null>(null);
-	const [imagesList, setImagesList] = React.useState<ImageInterface[]>([]);
-	
+
 	// To hide archived images
 	const [showArchivedImages, setShowArchivedImages] = React.useState<boolean>(false);
 
@@ -23,46 +21,37 @@ const ShowGalleryInternal: React.FC = () => {
 
 	const closeModal = () => setModalIsOpen(false);
 
-	// Manage the images of the album
-	const handledImageList = (list: ImageInterface[], showArchived: boolean) => {
-		!showArchived ? setImagesList(list) : setImagesList(list.filter(item => item.imgArchived !== true));
-	};
-
-	const imagesData = useSelector((state: RootState) => state.images);
+	const imagesData: ImageInterface[]= useSelector((state: RootState) => state.images);
 	const dispatch = useDispatch();
-	const { loadImages } = bindActionCreators(actionCreators, dispatch);
 
 	React.useEffect(() => {
 		try {
-			loadImages();
-			handledImageList(imagesData, showArchivedImages);
+			dispatch(actionCreators.loadImages(showArchivedImages));
 		} catch (error) {
 			console.log(error);
 		}
-	}, [showArchivedImages]);
+	}, [dispatch, showArchivedImages]);
 
 	return (
 		<div className="albumWrap">
-			{/* <div className="albumHeader">
+			<div className="albumHeader">
 				<span
 					style={{ display: 'inline-block' }}
-					onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => setShowArchivedImages(true)}
+					onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => setShowArchivedImages(!showArchivedImages)}
 				>
 					Show Archived
 				</span>
-			</div> */}
+			</div>
 			<div className="albumRow">
-				{imagesList.map((imageItem: ImageInterface, index: number) => {
+				{imagesData.map((imageItem: ImageInterface, index: number) => {
 					return (
-						!imageItem.imgArchived && (
-							<div className="photoWrap" key={index}>
-								<OverlayLayer>
-									{user && <ArchiveImage imgData={imageItem} />}
-									<div className="photoActionLayer" onClick={() => openModal(imageItem)}></div>
-								</OverlayLayer>
-								<img src={imageItem.imgSrc} alt={imageItem.imgName} />
-							</div>
-						)
+						<div className="photoWrap" key={index}>
+							<OverlayLayer>
+								{user && <ArchiveImage imgData={imageItem} />}
+								<div className="photoActionLayer" onClick={() => openModal(imageItem)}></div>
+							</OverlayLayer>
+							<img src={imageItem.imgSrc} alt={imageItem.imgName} />
+						</div>
 					);
 				})}
 			</div>
