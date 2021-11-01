@@ -17,3 +17,9 @@ export const getImageList = async () => {
 	});
 	return data;
 };
+
+export const archiveImage = async (image: ImageInterface) => {
+	const imageDocRef = db.collection(imagesDbCollection).doc(image.imgId);
+	imageDocRef.update({ imgArchived: true });
+	
+}

@@ -10,4 +10,9 @@ interface LoadImagesErrorAction {
     type: ActionType.LOAD_IMAGES_ERROR;
     error: string;
 }
-export type Action = LoadImagesAction | LoadImagesErrorAction;
+
+interface ArchiveImages {
+    type: ActionType.ARCHIVE_IMAGE;
+}
+
+export type Action = LoadImagesAction | LoadImagesErrorAction | ArchiveImages;

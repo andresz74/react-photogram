@@ -10,6 +10,11 @@
 	margin-bottom: 2em;
 }
 
+.albumHeaderMenu .menuItem {
+	display: inline-block;
+	cursor: pointer;
+}
+
 .albumRow {
 	display: flex;
 	flex-direction: row;

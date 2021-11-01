@@ -1,1 +1,1 @@
-export { getImageList } from './getImages';
+export { getImageList, archiveImage } from './images';

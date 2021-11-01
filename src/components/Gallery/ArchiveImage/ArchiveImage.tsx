@@ -1,18 +1,16 @@
 import React from 'react';
-import { db, imagesDbCollection } from 'firebase.configuration';
+// import { useDispatch } from 'react-redux';
+
 import { ImageInterface } from 'type';
+// import { actionCreators } from 'state';
 import './ArchiveImage.css';
 
 export interface ComponentProps {
 	imgData: ImageInterface;
+	handleArchiveImage: (item: ImageInterface) => void;
 }
 
-export const handleArchiveImage = (data: ImageInterface) => {
-	const imageDocRef = db.collection(imagesDbCollection).doc(data.imgId);
-	imageDocRef.update({ imgArchived: true });
-};
-
-export const ArchiveImage: React.FC<ComponentProps> = ({ imgData }) => {
+export const ArchiveImage: React.FC<ComponentProps> = ({ imgData, handleArchiveImage }) => {
 	return (
 		<div
 			className="archiveIconWrapper"
