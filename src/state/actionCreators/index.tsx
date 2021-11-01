@@ -17,9 +17,9 @@ export const loadImages = (showArchived?: boolean) => {
 	};
 };
 
-export const archiveImage = (image: ImageInterface) => {
+export const archiveImage = (image: ImageInterface, imgArchived: boolean) => {
 	return (dispatch: Dispatch<Action>) => {
-		Api.archiveImage(image);
+		Api.archiveImage(image, imgArchived);
 		dispatch({ 
 			type: ActionType.ARCHIVE_IMAGE,
 		})

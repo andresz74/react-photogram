@@ -1,7 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ArchiveImage, AuthContext, ModalImage, OverlayLayer } from 'components';
-import { db, imagesDbCollection } from 'firebase.configuration';
 import { actionCreators } from 'state';
 import { RootState } from 'state/reducers';
 import { ImageInterface } from 'type';
@@ -33,9 +32,9 @@ const ShowGalleryInternal: React.FC = () => {
 		}
 	}, [dispatch, showArchivedImages]);
 
-	const handleArchiveImage = (data: ImageInterface) => {
+	const handleArchiveImage = (data: ImageInterface, archived: boolean) => {
 		try {
-			dispatch(actionCreators.archiveImage(data));
+			dispatch(actionCreators.archiveImage(data, archived));
 			dispatch(actionCreators.loadImages(showArchivedImages));
 		} catch (error) {
 			console.error(error);
@@ -59,7 +58,7 @@ const ShowGalleryInternal: React.FC = () => {
 					return (
 						<div className="photoWrap" key={index}>
 							<OverlayLayer>
-								{user && !imageItem.imgArchived && <ArchiveImage imgData={imageItem} handleArchiveImage={handleArchiveImage} />}
+								{user && <ArchiveImage imgData={imageItem} handleArchiveImage={handleArchiveImage} imgArchived={imageItem.imgArchived} />}
 								<div className="photoActionLayer" onClick={() => openModal(imageItem)}></div>
 								{/* <span style={{ color: '#fff' }}>{imageItem.imgId}</span> */}
 							</OverlayLayer>

@@ -1,22 +1,24 @@
 import React from 'react';
-// import { useDispatch } from 'react-redux';
-
 import { ImageInterface } from 'type';
-// import { actionCreators } from 'state';
 import './ArchiveImage.css';
 
 export interface ComponentProps {
 	imgData: ImageInterface;
-	handleArchiveImage: (item: ImageInterface) => void;
+	imgArchived: boolean;
+	handleArchiveImage: (item: ImageInterface, imgArchived: boolean) => void;
 }
 
-export const ArchiveImage: React.FC<ComponentProps> = ({ imgData, handleArchiveImage }) => {
+export const ArchiveImage: React.FC<ComponentProps> = ({ imgArchived, imgData, handleArchiveImage }) => {
 	return (
 		<div
 			className="archiveIconWrapper"
-			onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => handleArchiveImage(imgData)}
+			onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => handleArchiveImage(imgData, imgArchived)}
 		>
-			<i className="icofont-inbox" title="Archive Image"></i>
+			{!imgArchived ? (
+				<i className="icofont-inbox" title="Archive Image"></i>
+			) : (
+				<i className="icofont-upload-alt" title="Archive Image"></i>
+			)}
 		</div>
 	);
 };
