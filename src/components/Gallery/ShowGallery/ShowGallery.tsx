@@ -28,7 +28,7 @@ const ShowGalleryInternal: React.FC = () => {
 		try {
 			dispatch(actionCreators.loadImages(showArchivedImages));
 		} catch (error) {
-			console.log(error);
+			console.error(error);
 		}
 	}, [dispatch, showArchivedImages]);
 
@@ -45,12 +45,14 @@ const ShowGalleryInternal: React.FC = () => {
 		<div className="albumWrap">
 			<div className="albumHeader">
 				<div className="albumHeaderMenu">
-					<span
-						className="menuItem"
-						onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => setShowArchivedImages(!showArchivedImages)}
-					>
-						{`${!showArchivedImages ? 'Show' : 'Hide'} Archived`}
-					</span>
+					{user && (
+						<span
+							className="menuItem"
+							onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => setShowArchivedImages(!showArchivedImages)}
+						>
+							{`${!showArchivedImages ? 'Show' : 'Hide'} Archived`}
+						</span>
+					)}
 				</div>
 			</div>
 			<div className="albumRow">
@@ -58,7 +60,13 @@ const ShowGalleryInternal: React.FC = () => {
 					return (
 						<div className="photoWrap" key={index}>
 							<OverlayLayer>
-								{user && <ArchiveImage imgData={imageItem} handleArchiveImage={handleArchiveImage} imgArchived={imageItem.imgArchived} />}
+								{user && (
+									<ArchiveImage
+										imgData={imageItem}
+										handleArchiveImage={handleArchiveImage}
+										imgArchived={imageItem.imgArchived}
+									/>
+								)}
 								<div className="photoActionLayer" onClick={() => openModal(imageItem)}></div>
 								{/* <span style={{ color: '#fff' }}>{imageItem.imgId}</span> */}
 							</OverlayLayer>

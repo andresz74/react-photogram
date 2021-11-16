@@ -20,8 +20,16 @@ export const loadImages = (showArchived?: boolean) => {
 export const archiveImage = (image: ImageInterface, imgArchived: boolean) => {
 	return (dispatch: Dispatch<Action>) => {
 		Api.archiveImage(image, imgArchived);
-		dispatch({ 
+		dispatch({
 			type: ActionType.ARCHIVE_IMAGE,
-		})
-	}
+		});
+	};
+};
+
+export const loadUsers = () => {
+	return (dispatch: Dispatch<Action>) => {
+		return Api.getUserList().then(results => {
+			dispatch({ type: ActionType.LOAD_USERS, userList: results });
+		});
+	};
 };

@@ -17,6 +17,8 @@ export const firebaseStorageUrl = 'gs://photograma-c2078.appspot.com';
 
 export const imagesDbCollection = 'imagesArray';
 
+export const usersDbCollection = 'usersArray';
+
 let app;
 if (!firebase.apps.length) {
 	app = firebase.initializeApp(firebaseConfig);

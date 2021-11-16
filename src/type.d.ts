@@ -5,3 +5,9 @@ export interface ImageInterface {
 	imgSrc: string;
 	imgUploadDate: number;
 }
+
+type UsersType = 'Admin' | 'Publisher';
+export interface UserInterface {
+	userType: UsersType;
+	userID: string;
+}
