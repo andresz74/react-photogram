@@ -1,3 +1,4 @@
 import { uuid } from './uuid';
+import IdleTimer from './idleTimer';
 
-export { uuid };
+export { IdleTimer, uuid };
