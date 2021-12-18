@@ -6,6 +6,7 @@ import { auth } from 'firebase.configuration';
 import { RootState } from 'state/reducers';
 import { UserInterface } from 'type';
 import { actionCreators } from 'state';
+import './Login.css'
 
 export const Login: React.FC = () => {
 	const user = React.useContext(AuthContext);
@@ -13,7 +14,7 @@ export const Login: React.FC = () => {
 	const passwordRef = React.useRef<HTMLInputElement>(null);
 	const history = useHistory();
 
-	const usersData: UserInterface[] = useSelector((state: RootState) => state.users);
+	// const usersData: UserInterface[] = useSelector((state: RootState) => state.users);
 	const dispatch = useDispatch();
 
 	const LogIn = async () => {
@@ -29,19 +30,17 @@ export const Login: React.FC = () => {
 	return (
 		<>
 			{!user && (
-				<>
-					<div>
-						Email
-						<input ref={emailRef} type="email" placeholder="email" />
+				<div className="loginForm">
+					<div className="loginFormInput">
+						<input ref={emailRef} type="email" placeholder="Email" />
 					</div>
-					<div>
-						Password
-						<input ref={passwordRef} type="password" name="" id="" />
+					<div className="loginFormInput">
+						<input ref={passwordRef} type="password" name="" id="" placeholder="Password" />
 					</div>
-					<div>
+					<div className="loginFormButton">
 						<button onClick={LogIn}>Login</button>
 					</div>
-				</>
+				</div>
 			)}
 		</>
 	);

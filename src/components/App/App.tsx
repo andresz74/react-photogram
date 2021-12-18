@@ -1,43 +1,38 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, useHistory } from 'react-router-dom';
-import { Footer, Header, Login, ShowGallery, UploadImage } from 'components';
+import { useIdleTimer } from 'react-idle-timer';
 import { auth } from 'firebase.configuration';
-import { IdleTimer } from 'utillity';
-
+import { Footer, Header, Login, ShowGallery, UploadImage } from 'components';
 import './App.css';
 
 export const App: React.FC = () => {
-	const [isTimeout, setIsTimeout] = React.useState(false);
-	// const history = useHistory();
-
+	const history = useHistory();
 	const signOut = async () => {
 		await auth.signOut();
+		console.log(history)
 		// history.push('/');
 	};
+	const handleOnIdle = (event: any) => {
+		console.log('user is idle', event);
+		console.log('last active', getLastActiveTime());
+		signOut();
+	};
 
-	React.useEffect(() => {
-		const timer = new IdleTimer({
-			timeout: 10, //expire after 10 seconds
-			onTimeout: () => {
-				setIsTimeout(true);
-			},
-			onExpired: () => {
-				//do something if expired on load
-				setIsTimeout(true);
-			},
-		});
+	const handleOnActive = (event: any) => {
+		console.log('user is active', event);
+		console.log('time remaining', getRemainingTime());
+	};
 
-		return () => {
-			timer.cleanUp();
-		};
-	}, []);
-
-	React.useEffect(() => {
-		if (isTimeout) {
-			signOut();
-		}
-	}, [isTimeout]);
-
+	const handleOnAction = (event: any) => {
+		console.log('user did something', event);
+	};
+	const { getRemainingTime, getLastActiveTime } = useIdleTimer({
+		timeout: 1000 * 60 * 15,
+		onIdle: handleOnIdle,
+		onActive: handleOnActive,
+		onAction: handleOnAction,
+		debounce: 500,
+	});
 	return (
 		<Router>
 			<div className="App">
