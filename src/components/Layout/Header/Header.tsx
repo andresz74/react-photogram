@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import { useIdleTimer } from 'react-idle-timer';
 import { AuthContext } from 'components';
 import { auth } from 'firebase.configuration';
 import './Header.css';
@@ -12,6 +13,28 @@ export const Header: React.FC = () => {
 		await auth.signOut();
 		history.push('/');
 	};
+	const handleOnIdle = (event: Event) => {
+		console.log('user is idle', event);
+		console.log('last active', getLastActiveTime());
+		signOut();
+	};
+
+	const handleOnActive = (event: Event) => {
+		console.log('user is active', event);
+		console.log('time remaining', getRemainingTime());
+	};
+
+	const handleOnAction = (event: Event) => {
+		console.log('user did something', event);
+	};
+
+	const { getRemainingTime, getLastActiveTime } = useIdleTimer({
+		timeout: 1000 * 60 * 15,
+		onIdle: handleOnIdle,
+		onActive: handleOnActive,
+		onAction: handleOnAction,
+		debounce: 500,
+	});
 
 	return (
 		<header className="App-header">
