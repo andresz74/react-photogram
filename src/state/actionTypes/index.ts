@@ -4,5 +4,4 @@ export enum ActionType {
 	ARCHIVE_IMAGE = 'ARCHIVE_IMAGE',
 	// ADD_IMAGE = 'ADD_IMAGE',
 	// REMOVE_IMAGE = 'REMOVE_IMAGE',
-	LOAD_USERS = 'LOAD_USERS',
 }

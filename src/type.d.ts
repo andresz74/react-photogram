@@ -6,7 +6,7 @@ export interface ImageInterface {
 	imgUploadDate: number;
 }
 
-type UsersType = 'Admin' | 'Publisher';
+type UsersType = 'Admin' | 'Publisher' | 'Viewer';
 export interface UserInterface {
 	userType: UsersType;
 	userID: string;

@@ -1,12 +1,9 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { getUserData } from 'api';
 import { AuthContext } from 'components';
 import { auth } from 'firebase.configuration';
-import { RootState } from 'state/reducers';
-import { UserInterface } from 'type';
-import { actionCreators } from 'state';
-import './Login.css'
+import './Login.css';
 
 export const Login: React.FC = () => {
 	const user = React.useContext(AuthContext);
@@ -14,13 +11,13 @@ export const Login: React.FC = () => {
 	const passwordRef = React.useRef<HTMLInputElement>(null);
 	const history = useHistory();
 
-	// const usersData: UserInterface[] = useSelector((state: RootState) => state.users);
-	const dispatch = useDispatch();
-
 	const LogIn = async () => {
 		try {
-			await auth.signInWithEmailAndPassword(emailRef.current!.value, passwordRef.current!.value);
-			dispatch(actionCreators.loadUsers());
+			const userCredential = await auth.signInWithEmailAndPassword(emailRef.current!.value, passwordRef.current!.value);
+			if (userCredential) {
+				console.log(userCredential.user?.uid);
+				getUserData(userCredential.user?.uid);
+			}
 			history.push('/');
 		} catch (error) {
 			console.error(error);

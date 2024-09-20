@@ -27,9 +27,23 @@ if (!firebase.apps.length) {
 // Initialize Firebase Firestore
 const db = firebase.firestore(app);
 
-// Initialize Firebase Storage
-const storage = firebase.storage();
-
 const auth = firebase.auth();
 
-export { auth, db, storage };
+export { auth, db };
+
+// Replace Firebase Storage upload with backend API upload
+export const uploadImageToBackend = async (file: any) => {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+        const response = await fetch('/api/upload', {  // Assume your server is at /api/upload
+            method: 'POST',
+            body: formData,
+        });
+        const data = await response.json();
+        return data;  // Return response from server (e.g., image URL)
+    } catch (error) {
+        console.error('Error uploading image:', error);
+    }
+};

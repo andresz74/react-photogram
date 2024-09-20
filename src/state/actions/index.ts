@@ -1,4 +1,4 @@
-import { ImageInterface, UserInterface } from 'type';
+import { ImageInterface } from 'type';
 import { ActionType } from '../actionTypes';
 
 interface LoadImagesAction {
@@ -15,9 +15,4 @@ interface ArchiveImages {
 	type: ActionType.ARCHIVE_IMAGE;
 }
 
-interface LoadUsersAction {
-	type: ActionType.LOAD_USERS;
-	userList: UserInterface[];
-}
-
-export type Action = LoadImagesAction | LoadImagesErrorAction | ArchiveImages | LoadUsersAction;
+export type Action = LoadImagesAction | LoadImagesErrorAction | ArchiveImages;

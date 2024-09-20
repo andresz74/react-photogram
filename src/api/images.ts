@@ -1,12 +1,14 @@
-import { db, imagesDbCollection, storage } from 'firebase.configuration';
+import { db, imagesDbCollection } from 'firebase.configuration'; // Removed `storage` as uploads are handled on the backend
 import { ImageInterface } from 'type';
 
+// Firestore reference
 const imagesRef = db.collection(imagesDbCollection);
 
-export const getImageList = async () => {
+// Function to get the list of images from Firestore
+export const getImageList = async (): Promise<ImageInterface[]> => {
 	const snapshot = await imagesRef.get();
 	const data: ImageInterface[] = [];
-	
+
 	snapshot.forEach(doc => {
 		data.push({
 			imgId: doc.id,
@@ -20,40 +22,60 @@ export const getImageList = async () => {
 	return data;
 };
 
+// Function to archive/unarchive an image
 export const archiveImage = async (image: ImageInterface, imgArchived: boolean) => {
 	const imageDocRef = db.collection(imagesDbCollection).doc(image.imgId);
-	imageDocRef.update({ imgArchived: !imgArchived });
+	await imageDocRef.update({ imgArchived: !imgArchived });
 };
 
-// export const uploadImage = async (imgName: string, imgFile: File) => {
-// 	const uploadTask = storage.ref(`images/${imgName}`).put(imgFile);
+// Function to upload an image to the backend service
+export const uploadImage = async (image: File): Promise<string | null> => {
+	const formData = new FormData();
+	formData.append('image', image);
 
-// 	uploadTask.on(
-// 		'state_changed',
-// 		snapshot => {
-// 			const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-// 			setImageUploadProgress(progress);
-// 		},
-// 		error => {
-// 			console.error(error);
-// 		},
-// 		() => {
-// 			storage
-// 				.ref('images')
-// 				.child(image.name)
-// 				.getDownloadURL()
-// 				.then(url => {
-// 					setImageUrl(url);
-// 					db.collection(imagesDbCollection).add({
-// 						imgArchived: false,
-// 						imgSrc: url,
-// 						imgName: image.name,
-// 						imgUploadDate: Date.now(),
-// 					});
-// 				})
-// 				.catch(error => {
-// 					console.error(error);
-// 				});
-// 		},
-// 	);
-// };
+	try {
+		// Make a POST request to the backend for image upload
+		const response = await fetch('/api/upload', {
+			method: 'POST',
+			body: formData,
+		});
+
+		if (response.ok) {
+			const { url } = await response.json();
+			return url; // Return the uploaded image URL
+		} else {
+			console.error('Error uploading image:', await response.text());
+			return null;
+		}
+	} catch (error) {
+		console.error('Error uploading image:', error);
+		return null;
+	}
+};
+
+// Function to delete an image both from Firestore and Firebase Storage via backend
+export const deleteImage = async (image: ImageInterface) => {
+	// Delete image document from Firestore
+	const imageDocRef = db.collection(imagesDbCollection).doc(image.imgId);
+	try {
+		await imageDocRef.delete();
+		console.log(`Firestore document deleted: ${image.imgId}`);
+
+		// Call the backend API to delete the image from Firebase Storage
+		const response = await fetch(`/api/delete-image`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ imgName: image.imgName }),
+		});
+
+		if (response.ok) {
+			console.log(`Image successfully deleted from Firebase Storage: ${image.imgName}`);
+		} else {
+			console.error('Error deleting image from Firebase Storage:', await response.text());
+		}
+	} catch (error) {
+		console.error('Error deleting image:', error);
+	}
+};
