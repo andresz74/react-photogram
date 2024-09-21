@@ -16,6 +16,7 @@ export const getImageList = async (): Promise<ImageInterface[]> => {
 			imgUploadDate: doc.data().imgUploadDate,
 			imgSrc: doc.data().imgSrc,
 			imgName: doc.data().imgName,
+			imgUserOwner: doc.data().imgUserOwner,
 		});
 	});
 
