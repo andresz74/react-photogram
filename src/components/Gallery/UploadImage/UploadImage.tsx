@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { db, imagesDbCollection } from 'firebase.configuration';
-import { uploadImage } from 'api'; 
+import { uploadImage } from 'api';
+import { RootState } from 'state/reducers';
 import './UploadImage.css';
 
 export const UploadImage: React.FC = () => {
 	const [image, setImage] = useState<File | null>(null);
 	const [imageUrl, setImageUrl] = useState<string | null>(null);
 	const [imageUploadProgress, setImageUploadProgress] = useState<number>(0);
+
+	const userUID = useSelector((state: RootState) => state.auth.uid);
 
 	// Handle file selection
 	const handleChange = (files: FileList | null) => {
@@ -35,6 +39,7 @@ export const UploadImage: React.FC = () => {
 						imgSrc: imageUrl,
 						imgName: image.name,
 						imgUploadDate: Date.now(),
+						imgUserOwner: userUID,
 					});
 					console.log('Image uploaded and added to Firestore');
 				} else {
