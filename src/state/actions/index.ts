@@ -15,4 +15,10 @@ interface ArchiveImages {
 	type: ActionType.ARCHIVE_IMAGE;
 }
 
-export type Action = LoadImagesAction | LoadImagesErrorAction | ArchiveImages;
+interface SetUserUIDAction {
+    type: ActionType.SET_USER_UID;
+    uid: string;
+}
+
+export type Action = LoadImagesAction | LoadImagesErrorAction | ArchiveImages | SetUserUIDAction;
+

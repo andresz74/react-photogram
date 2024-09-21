@@ -1,8 +1,10 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { getUserData } from 'api';
 import { AuthContext } from 'components';
 import { auth } from 'firebase.configuration';
+import { actionCreators } from 'state';
 import './Login.css';
 
 export const Login: React.FC = () => {
@@ -10,13 +12,19 @@ export const Login: React.FC = () => {
 	const emailRef = React.useRef<HTMLInputElement>(null);
 	const passwordRef = React.useRef<HTMLInputElement>(null);
 	const history = useHistory();
+	const dispatch = useDispatch();
 
 	const LogIn = async () => {
 		try {
 			const userCredential = await auth.signInWithEmailAndPassword(emailRef.current!.value, passwordRef.current!.value);
 			if (userCredential) {
-				console.log(userCredential.user?.uid);
-				getUserData(userCredential.user?.uid);
+				const userUID = userCredential.user?.uid;
+				// Store the UID in Redux
+				if (userUID) { 
+					console.log(userUID); 
+					dispatch(actionCreators.setUserUID(userUID)); 
+					getUserData(userUID); 
+				}
 			}
 			history.push('/');
 		} catch (error) {

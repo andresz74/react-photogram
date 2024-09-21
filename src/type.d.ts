@@ -4,6 +4,7 @@ export interface ImageInterface {
 	imgName: string;
 	imgSrc: string;
 	imgUploadDate: number;
+	imgUserOwner: string;
 }
 
 type UsersType = 'Admin' | 'Publisher' | 'Viewer';
