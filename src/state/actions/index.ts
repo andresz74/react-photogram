@@ -6,6 +6,11 @@ interface LoadImagesAction {
 	imgList: ImageInterface[];
 }
 
+interface LoadUserImagesAction {
+	type: ActionType.LOAD_USER_IMAGES;
+	imgUserList: ImageInterface[];
+}
+
 interface LoadImagesErrorAction {
 	type: ActionType.LOAD_IMAGES_ERROR;
 	error: string;
@@ -17,8 +22,8 @@ interface ArchiveImages {
 
 interface SetUserUIDAction {
     type: ActionType.SET_USER_UID;
-    uid: string;
+    uid: string | null;
 }
 
-export type Action = LoadImagesAction | LoadImagesErrorAction | ArchiveImages | SetUserUIDAction;
+export type Action = LoadImagesAction | LoadUserImagesAction | LoadImagesErrorAction | ArchiveImages | SetUserUIDAction;
 

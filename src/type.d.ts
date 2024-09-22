@@ -2,6 +2,7 @@ export interface ImageInterface {
 	imgArchived: boolean;
 	imgId?: string;
 	imgName: string;
+	imgPrivate: boolean;
 	imgSrc: string;
 	imgUploadDate: number;
 	imgUserOwner: string;

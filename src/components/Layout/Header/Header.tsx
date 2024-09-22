@@ -59,6 +59,13 @@ export const Header: React.FC = () => {
 					</li>
 				)}
 				{user && (
+					<li className="menuItem">
+						<Link className="menuLink" to="/mygallery">
+							{'My Gallery'}
+						</Link>
+					</li>
+				)}
+				{user && (
 					<li className="menuItem itemClick" onClick={signOut}>
 						Sign out
 					</li>

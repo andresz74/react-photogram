@@ -14,16 +14,17 @@ export const Login: React.FC = () => {
 	const history = useHistory();
 	const dispatch = useDispatch();
 
+	// Function to handle login and dispatch user UID
 	const LogIn = async () => {
 		try {
 			const userCredential = await auth.signInWithEmailAndPassword(emailRef.current!.value, passwordRef.current!.value);
 			if (userCredential) {
 				const userUID = userCredential.user?.uid;
 				// Store the UID in Redux
-				if (userUID) { 
-					console.log(userUID); 
-					dispatch(actionCreators.setUserUID(userUID)); 
-					getUserData(userUID); 
+				if (userUID) {
+					console.log(userUID);
+					dispatch(actionCreators.setUserUID(userUID));
+					getUserData(userUID);
 				}
 			}
 			history.push('/');
@@ -31,6 +32,19 @@ export const Login: React.FC = () => {
 			console.error(error);
 		}
 	};
+
+	// Listen for auth state changes to persist the auth state across page refreshes
+	React.useEffect(() => {
+		const unsubscribe = auth.onAuthStateChanged((user) => {
+			if (user) {
+				// If user is already logged in, store their UID in Redux
+				dispatch(actionCreators.setUserUID(user.uid));
+			}
+		});
+
+		// Cleanup subscription on unmount
+		return () => unsubscribe();
+	}, [dispatch]);
 
 	return (
 		<>

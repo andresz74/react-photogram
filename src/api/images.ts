@@ -13,12 +13,14 @@ export const getImageList = async (): Promise<ImageInterface[]> => {
 		data.push({
 			imgId: doc.id,
 			imgArchived: doc.data().imgArchived,
-			imgUploadDate: doc.data().imgUploadDate,
-			imgSrc: doc.data().imgSrc,
 			imgName: doc.data().imgName,
+			imgPrivate: doc.data().imgPrivate,
+			imgSrc: doc.data().imgSrc,
+			imgUploadDate: doc.data().imgUploadDate,
 			imgUserOwner: doc.data().imgUserOwner,
 		});
 	});
+	console.log(data);
 
 	return data;
 };
