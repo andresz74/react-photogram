@@ -10,6 +10,7 @@ export const UploadImage: React.FC = () => {
 	const [image, setImage] = useState<File | null>(null);
 	const [imageUrl, setImageUrl] = useState<string | null>(null);
 	const [imageUploadProgress, setImageUploadProgress] = useState<number>(0);
+	const [isUploading, setIsUploading] = useState<boolean>(false); // New state to manage upload status
 
 	const userUID = useSelector((state: RootState) => state.auth.uid);
 
@@ -23,7 +24,8 @@ export const UploadImage: React.FC = () => {
 
 	// Handle image upload using the backend API
 	const handleUpload = async () => {
-		if (image) {
+		if (image && !isUploading) {
+			setIsUploading(true); // Disable upload button after upload starts
 			setImageUploadProgress(10); // Set initial progress state (optional)
 
 			try {
@@ -47,8 +49,10 @@ export const UploadImage: React.FC = () => {
 				}
 			} catch (error) {
 				console.error('Error uploading image:', error);
+			} finally {
+				setIsUploading(false); // Re-enable the button after upload completes
 			}
-		} else {
+		} else if (!image) {
 			console.error('No image selected');
 		}
 	};
@@ -71,8 +75,8 @@ export const UploadImage: React.FC = () => {
 					<input className="inputFile" type="file" onChange={(e) => handleChange(e.target.files)} />
 				</div>
 				<div className="buttonWrap">
-					<button className="buttonMain" onClick={handleUpload} disabled={!image}>
-						Upload
+					<button className="buttonMain" onClick={handleUpload} disabled={!image || isUploading}>
+						{isUploading ? 'Uploading...' : 'Upload'}
 					</button>
 				</div>
 				<div>

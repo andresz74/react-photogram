@@ -22,7 +22,6 @@ export const Login: React.FC = () => {
 				const userUID = userCredential.user?.uid;
 				// Store the UID in Redux
 				if (userUID) {
-					console.log(userUID);
 					dispatch(actionCreators.setUserUID(userUID));
 					getUserData(userUID);
 				}
