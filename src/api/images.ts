@@ -38,7 +38,7 @@ export const uploadImage = async (image: File): Promise<string | null> => {
 
 	try {
 		// Make a POST request to the backend for image upload
-		const response = await fetch('http://192.168.1.179:3003/api/upload', {
+		const response = await fetch('http://192.168.1.181:3003/api/upload', {
 			method: 'POST',
 			body: formData,
 		});
@@ -65,7 +65,7 @@ export const deleteImage = async (image: ImageInterface) => {
 		console.log(`Firestore document deleted: ${image.imgId}`);
 
 		// Call the backend API to delete the image from Firebase Storage
-		const response = await fetch(`http://192.168.1.179:3003/api/delete-image`, {
+		const response = await fetch(`http://192.168.1.181:3003/api/delete-image`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
