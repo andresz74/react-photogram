@@ -1,9 +1,14 @@
-import { ImageInterface, UserInterface } from 'type';
+import { ImageInterface } from 'type';
 import { ActionType } from '../actionTypes';
 
 interface LoadImagesAction {
 	type: ActionType.LOAD_IMAGES;
 	imgList: ImageInterface[];
+}
+
+interface LoadUserImagesAction {
+	type: ActionType.LOAD_USER_IMAGES;
+	imgUserList: ImageInterface[];
 }
 
 interface LoadImagesErrorAction {
@@ -15,9 +20,10 @@ interface ArchiveImages {
 	type: ActionType.ARCHIVE_IMAGE;
 }
 
-interface LoadUsersAction {
-	type: ActionType.LOAD_USERS;
-	userList: UserInterface[];
+interface SetUserUIDAction {
+    type: ActionType.SET_USER_UID;
+    uid: string | null;
 }
 
-export type Action = LoadImagesAction | LoadImagesErrorAction | ArchiveImages | LoadUsersAction;
+export type Action = LoadImagesAction | LoadUserImagesAction | LoadImagesErrorAction | ArchiveImages | SetUserUIDAction;
+

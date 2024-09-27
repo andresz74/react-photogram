@@ -1,53 +1,60 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { db, imagesDbCollection, storage } from 'firebase.configuration';
+import { db, imagesDbCollection } from 'firebase.configuration';
+import { uploadImage } from 'api';
+import { RootState } from 'state/reducers';
 import './UploadImage.css';
 
 export const UploadImage: React.FC = () => {
-	const [image, setImage] = React.useState<File | null>(null);
-	const [imageUrl, setImageUrl] = React.useState<string | null>(null);
-	const [imageUploadProgress, setImageUploadProgress] = React.useState<number>(0);
+	const [image, setImage] = useState<File | null>(null);
+	const [imageUrl, setImageUrl] = useState<string | null>(null);
+	const [imageUploadProgress, setImageUploadProgress] = useState<number>(0);
+	const [isUploading, setIsUploading] = useState<boolean>(false); // New state to manage upload status
 
+	const userUID = useSelector((state: RootState) => state.auth.uid);
+
+	// Handle file selection
 	const handleChange = (files: FileList | null) => {
-		if (files !== null) {
-			setImageUploadProgress(0);
+		if (files) {
+			setImageUploadProgress(0); // Reset progress when a new file is selected
 			setImage(files[0]);
 		}
 	};
 
-	const handleUpload = () => {
-		if (image !== null) {
-			const uploadTask = storage.ref(`images/${image.name}`).put(image);
-			uploadTask.on(
-				'state_changed',
-				snapshot => {
-					const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-					setImageUploadProgress(progress);
-				},
-				error => {
-					console.error(error);
-				},
-				() => {
-					storage
-						.ref('images')
-						.child(image.name)
-						.getDownloadURL()
-						.then(url => {
-							setImageUrl(url);
-							db.collection(imagesDbCollection).add({
-								imgArchived: false,
-								imgSrc: url,
-								imgName: image.name,
-								imgUploadDate: Date.now(),
-							});
-						})
-						.catch(error => {
-							console.error(error);
-						});
-				},
-			);
-		} else {
-			console.error(`Can't upload image`);
+	// Handle image upload using the backend API
+	const handleUpload = async () => {
+		if (image && !isUploading) {
+			setIsUploading(true); // Disable upload button after upload starts
+			setImageUploadProgress(10); // Set initial progress state (optional)
+
+			try {
+				// Use the API call to upload the image to the backend
+				const imageUrl = await uploadImage(image);
+				if (imageUrl) {
+					setImageUrl(imageUrl);
+					setImageUploadProgress(100); // Set progress to complete
+
+					// Store the image metadata in Firestore
+					await db.collection(imagesDbCollection).add({
+						imgArchived: false,
+						imgSrc: imageUrl,
+						imgName: image.name,
+						imgUploadDate: Date.now(),
+						imgUserOwner: userUID,
+						imgPrivate: false,
+					});
+					console.log('Image uploaded and added to Firestore');
+				} else {
+					console.error('Failed to upload image');
+				}
+			} catch (error) {
+				console.error('Error uploading image:', error);
+			} finally {
+				setIsUploading(false); // Re-enable the button after upload completes
+			}
+		} else if (!image) {
+			console.error('No image selected');
 		}
 	};
 
@@ -66,15 +73,15 @@ export const UploadImage: React.FC = () => {
 					<progress className="progressBar" value={imageUploadProgress} max="100" />
 				</div>
 				<div className="inputFileWrap">
-					<input className="inputFile" type="file" onChange={e => handleChange(e.target.files)} />
+					<input className="inputFile" type="file" onChange={(e) => handleChange(e.target.files)} />
 				</div>
 				<div className="buttonWrap">
-					<button className="buttonMain" onClick={handleUpload}>
-						Upload
+					<button className="buttonMain" onClick={handleUpload} disabled={!image || isUploading}>
+						{isUploading ? 'Uploading...' : 'Upload'}
 					</button>
 				</div>
 				<div>
-					{imageUploadProgress === 100 && <span className="fileUrl">{'Uploaded!'}</span>}
+					{imageUploadProgress === 100 && <span className="fileUrl">Uploaded!</span>}
 					{imageUrl && <img className="filePreview" src={imageUrl} alt="" />}
 				</div>
 			</div>

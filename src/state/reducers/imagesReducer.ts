@@ -8,6 +8,8 @@ const reducer = (state: ImageInterface[] = initialState, action: Action) => {
 	switch (action.type) {
 		case ActionType.LOAD_IMAGES:
 			return action.imgList;
+		case ActionType.LOAD_USER_IMAGES:
+			return action.imgUserList;
 		case ActionType.LOAD_IMAGES_ERROR:
 			return action.error;
 		case ActionType.ARCHIVE_IMAGE:
