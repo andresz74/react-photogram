@@ -42,6 +42,7 @@ export const UploadImage: React.FC = () => {
 						imgName: image.name,
 						imgUploadDate: Date.now(),
 						imgUserOwner: userUID,
+						imgPrivate: false,
 					});
 					console.log('Image uploaded and added to Firestore');
 				} else {
