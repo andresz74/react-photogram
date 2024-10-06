@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ArchiveImage, AuthContext, ModalImage, OverlayLayer } from 'components';
+import { ArchiveImage, AuthContext, HideImage, ModalImage, OverlayLayer } from 'components';
 import { actionCreators } from 'state';
 import { RootState } from 'state/reducers';
 import { ImageInterface } from 'type';
@@ -10,9 +10,6 @@ const ShowGalleryInternal: React.FC = () => {
 	const user = React.useContext(AuthContext);
 	const [modalIsOpen, setModalIsOpen] = React.useState<boolean>(false);
 	const [modalImage, setModalImage] = React.useState<ImageInterface | null>(null);
-
-	// To hide archived images
-	const [showArchivedImages, setShowArchivedImages] = React.useState<boolean>(false);
 
 	const openModal = (imageItem: ImageInterface) => {
 		setModalImage(imageItem);
@@ -26,16 +23,16 @@ const ShowGalleryInternal: React.FC = () => {
 
 	React.useEffect(() => {
 		try {
-			dispatch(actionCreators.loadImages(showArchivedImages));
+			dispatch(actionCreators.loadImages());
 		} catch (error) {
 			console.error(error);
 		}
-	}, [dispatch, showArchivedImages]);
+	}, [dispatch]);
 
 	const handleArchiveImage = (data: ImageInterface, archived: boolean) => {
 		try {
 			dispatch(actionCreators.archiveImage(data, archived));
-			dispatch(actionCreators.loadImages(showArchivedImages));
+			dispatch(actionCreators.loadImages());
 		} catch (error) {
 			console.error(error);
 		}
@@ -43,18 +40,6 @@ const ShowGalleryInternal: React.FC = () => {
 
 	return (
 		<div className="albumWrap">
-			<div className="albumHeader">
-				<div className="albumHeaderMenu">
-					{user && (
-						<span
-							className="menuItem"
-							onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => setShowArchivedImages(!showArchivedImages)}
-						>
-							{`${!showArchivedImages ? 'Show' : 'Hide'} Archived`}
-						</span>
-					)}
-				</div>
-			</div>
 			<div className="albumRow">
 				{imagesData.length === 0 ? (
 					<p>No images available</p>  // Placeholder to show when no images are loaded
@@ -63,22 +48,13 @@ const ShowGalleryInternal: React.FC = () => {
 						return (
 							<div className="photoWrap" key={index}>
 								<OverlayLayer>
-									{user && (
-										<ArchiveImage
-											imgData={imageItem}
-											handleArchiveImage={handleArchiveImage}
-											imgArchived={imageItem.imgArchived}
-										/>
-									)}
 									<div className="photoActionLayer" onClick={() => openModal(imageItem)}></div>
-									{/* <span style={{ color: '#fff' }}>{imageItem.imgId}</span> */}
 								</OverlayLayer>
 								<img src={imageItem.imgSrc} alt={imageItem.imgName} />
 							</div>
 						);
 					})
-				)
-				}
+				)}
 			</div>
 			{modalImage !== null && (
 				<ModalImage imgSrc={modalImage.imgSrc} imgName={modalImage.imgName} isOpen={modalIsOpen} onClose={closeModal} />

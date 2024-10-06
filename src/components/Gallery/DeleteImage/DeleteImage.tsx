@@ -1,39 +1,27 @@
 import React from 'react';
-import { db, imagesDbCollection, storage } from 'firebase.configuration';
 import { ImageInterface } from 'type';
+import { deleteImage } from 'api';
 import './DeleteImage.css';
 
 export interface ComponentProps {
 	imgData: ImageInterface;
 }
 
-export const handleDeleteImage = (data: ImageInterface) => {
-	const imageDocRef = db.collection(imagesDbCollection).doc(data.imgId);
-	const imageStorageRef = storage.ref(`images/${data.imgName}`);
-	imageDocRef
-		.delete()
-		.then(() => {
-			console.log('Document successfully deleted!', data.imgId);
-		})
-		.catch(err => {
-			console.error('Error removing document: ', err);
-		});
-
-	imageStorageRef
-		.delete()
-		.then(() => {
-			console.log('File successfully deleted!', data.imgName);
-		})
-		.catch(err => {
-			console.error('an error occurred!: ', err);
-		});
+// Call the API management deleteImage function to handle image deletion
+export const handleDeleteImage = async (data: ImageInterface) => {
+	try {
+		await deleteImage(data);
+		console.log(`Image with ID ${data.imgId} deleted successfully`);
+	} catch (error) {
+		console.error('Error deleting image:', error);
+	}
 };
 
 export const DeleteImage: React.FC<ComponentProps> = ({ imgData }) => {
 	return (
 		<div
 			className="deleteIconWrapper"
-			onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => handleDeleteImage(imgData)}
+			onClick={() => handleDeleteImage(imgData)}
 		>
 			<i className="icofont-bin" title="Delete Image"></i>
 		</div>

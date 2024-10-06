@@ -1,2 +1,2 @@
-export { getImageList, archiveImage } from './images';
-export { getUserList } from './users';
+export { getImageList, archiveImage, deleteImage, uploadImage } from './images';
+export { getUserData } from './users';

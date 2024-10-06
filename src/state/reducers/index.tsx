@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
 import imagesReducer from './imagesReducer';
-import usersReducer from './usersReducer';
+import authReducer from './authReducer';
 
 const reducers = combineReducers({
 	images: imagesReducer,
-	users: usersReducer,
+	auth: authReducer,
 });
 
 export default reducers;
