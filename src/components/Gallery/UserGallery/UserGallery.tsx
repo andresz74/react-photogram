@@ -62,31 +62,35 @@ const UserGalleryInternal: React.FC = () => {
 				</div>
 			</div>
 			<div className="albumRow">
-				{imagesData.map((imageItem: ImageInterface, index: number) => {
-					return (
-						<div className="photoWrap" key={index}>
-							<OverlayLayer>
-								{uid && (
-									<>
-										<ArchiveImage
-											imgData={imageItem}
-											handleArchiveImage={handleArchiveImage}
-											imgArchived={imageItem.imgArchived}
-										/>
-										<HideImage
-											imgData={imageItem}
-											handleHideImage={handleArchiveImage}
-											imgPrivate={imageItem.imgPrivate}
-										/>
-									</>
-								)}
-								<div className="photoActionLayer" onClick={() => openModal(imageItem)}></div>
-								{/* <span style={{ color: '#fff' }}>{imageItem.imgId}</span> */}
-							</OverlayLayer>
-							<img src={imageItem.imgSrc} alt={imageItem.imgName} />
-						</div>
-					);
-				})}
+				{imagesData.length === 0 ? (
+					<p>No images available</p>  // Placeholder to show when no images are loaded
+				) : (
+					imagesData.map((imageItem: ImageInterface, index: number) => {
+						return (
+							<div className="photoWrap" key={index}>
+								<OverlayLayer>
+									{uid && (
+										<>
+											<ArchiveImage
+												imgData={imageItem}
+												handleArchiveImage={handleArchiveImage}
+												imgArchived={imageItem.imgArchived}
+											/>
+											<HideImage
+												imgData={imageItem}
+												handleHideImage={handleArchiveImage}
+												imgPrivate={imageItem.imgPrivate}
+											/>
+										</>
+									)}
+									<div className="photoActionLayer" onClick={() => openModal(imageItem)}></div>
+									{/* <span style={{ color: '#fff' }}>{imageItem.imgId}</span> */}
+								</OverlayLayer>
+								<img src={imageItem.imgSrc} alt={imageItem.imgName} />
+							</div>
+						);
+					})
+				)}
 			</div>
 			{modalImage !== null && (
 				<ModalImage imgSrc={modalImage.imgSrc} imgName={modalImage.imgName} isOpen={modalIsOpen} onClose={closeModal} />
