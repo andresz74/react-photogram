@@ -33,8 +33,12 @@ export const App: React.FC = () => {
 		onAction: handleOnAction,
 		debounce: 500,
 	});
+
+	// Conditionally set the basename depending on the environment
+	const basename = process.env.NODE_ENV === 'production' ? '/photogram' : '/';
+
 	return (
-		<Router>
+		<Router basename={basename}>
 			<div className="App">
 				<Header />
 				<main className="App-main">
