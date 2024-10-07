@@ -1,15 +1,23 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { ArchiveImage, AuthContext, HideImage, ModalImage, OverlayLayer } from 'components';
 import { actionCreators } from 'state';
 import { RootState } from 'state/reducers';
 import { ImageInterface } from 'type';
 import './ShowGallery.css';
 
-const ShowGalleryInternal: React.FC = () => {
+export interface ComponentProps {
+	uid?: string | null;
+}
+
+const ShowGalleryInternal: React.FC<ComponentProps> = ({ uid }) => {
 	const user = React.useContext(AuthContext);
 	const [modalIsOpen, setModalIsOpen] = React.useState<boolean>(false);
 	const [modalImage, setModalImage] = React.useState<ImageInterface | null>(null);
+	// To hide archived images
+	const [showArchivedImages, setShowArchivedImages] = React.useState<boolean>(false);
+	const location = useLocation();
 
 	const openModal = (imageItem: ImageInterface) => {
 		setModalImage(imageItem);
@@ -18,16 +26,30 @@ const ShowGalleryInternal: React.FC = () => {
 
 	const closeModal = () => setModalIsOpen(false);
 
-	const imagesData: ImageInterface[] = useSelector((state: RootState) => state.images);
+	const imagesData = useSelector((state: RootState) =>
+		uid ? state.userImages : state.images
+	);
+
 	const dispatch = useDispatch();
 
 	React.useEffect(() => {
 		try {
-			dispatch(actionCreators.loadImages());
+			if (user && uid) {  // Only load images if UID is available
+				dispatch(actionCreators.loadUserImages(showArchivedImages));
+			} else {
+				dispatch(actionCreators.loadImages());
+			}
 		} catch (error) {
 			console.error(error);
 		}
-	}, [dispatch]);
+	}, [dispatch, showArchivedImages, uid]);
+
+	React.useEffect(() => {
+		// Clear images on route change
+		return () => {
+			dispatch(actionCreators.clearImages());
+		};
+	}, [location.pathname, dispatch]);
 
 	const handleArchiveImage = (data: ImageInterface, archived: boolean) => {
 		try {
@@ -40,6 +62,23 @@ const ShowGalleryInternal: React.FC = () => {
 
 	return (
 		<div className="albumWrap">
+			<div>
+				{uid && user ? (
+					<h2>Welcome {user.displayName}, here’s your personal gallery.</h2>
+				) : null}
+			</div>
+			<div className="albumHeader">
+				<div className="albumHeaderMenu">
+					{uid && (
+						<span
+							className="menuItem"
+							onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => setShowArchivedImages(!showArchivedImages)}
+						>
+							{`${!showArchivedImages ? 'Show' : 'Hide'} Archived`}
+						</span>
+					)}
+				</div>
+			</div>
 			<div className="albumRow">
 				{imagesData.length === 0 ? (
 					<p>No images available</p>  // Placeholder to show when no images are loaded
@@ -48,6 +87,20 @@ const ShowGalleryInternal: React.FC = () => {
 						return (
 							<div className="photoWrap" key={index}>
 								<OverlayLayer>
+									{uid && (
+										<>
+											<ArchiveImage
+												imgData={imageItem}
+												handleArchiveImage={handleArchiveImage}
+												imgArchived={imageItem.imgArchived}
+											/>
+											<HideImage
+												imgData={imageItem}
+												handleHideImage={handleArchiveImage}
+												imgPrivate={imageItem.imgPrivate}
+											/>
+										</>
+									)}
 									<div className="photoActionLayer" onClick={() => openModal(imageItem)}></div>
 								</OverlayLayer>
 								<img src={imageItem.imgSrc} alt={imageItem.imgName} />

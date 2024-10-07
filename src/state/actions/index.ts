@@ -21,9 +21,13 @@ interface ArchiveImages {
 }
 
 interface SetUserUIDAction {
-    type: ActionType.SET_USER_UID;
-    uid: string | null;
+	type: ActionType.SET_USER_UID;
+	uid: string | null;
 }
 
-export type Action = LoadImagesAction | LoadUserImagesAction | LoadImagesErrorAction | ArchiveImages | SetUserUIDAction;
+interface ClearImagesAction {
+	type: ActionType.CLEAR_IMAGES;
+}
+
+export type Action = LoadImagesAction | LoadUserImagesAction | LoadImagesErrorAction | ArchiveImages | SetUserUIDAction | ClearImagesAction;
 

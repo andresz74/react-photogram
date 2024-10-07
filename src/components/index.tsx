@@ -1,6 +1,6 @@
 import { App, AppInitializer } from './App';
 import { AuthContext, AuthProvider, CoreModal } from './Common';
-import { ArchiveImage, DeleteImage, HideImage, OverlayLayer, ModalImage, ShowGallery, UploadImage, UserGallery } from './Gallery';
+import { ArchiveImage, DeleteImage, HideImage, OverlayLayer, ModalImage, ShowGallery, UploadImage } from './Gallery';
 import { Footer, Header } from './Layout';
 import { Login } from './Login';
 
@@ -20,5 +20,4 @@ export {
 	OverlayLayer,
 	ShowGallery,
 	UploadImage,
-	UserGallery,
 };
