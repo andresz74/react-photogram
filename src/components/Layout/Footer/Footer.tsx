@@ -2,7 +2,8 @@ import React from 'react';
 import './Footer.css';
 
 export const Footer: React.FC = () => {
-	return <footer className="App-footer">Copyright &copy; 2021 · All rights reserved</footer>;
+	const getYear = new Date().getFullYear();
+	return <footer className="App-footer">{`Copyright &copy; ${getYear} · All rights reserved`}</footer>;
 };
 
 Footer.displayName = 'Footer';

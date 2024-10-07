@@ -21,12 +21,10 @@ export const loadImages = () => {
 export const loadUserImages = (showArchived?: boolean) => {
 	return (dispatch: Dispatch<Action>, getState: () => any) => {
 		const { uid } = getState().auth;
-		console.log("Current UID:", uid);
-
 		if (!uid) {
-            console.error('User is not logged in.');
-            return;
-        }
+			console.error('User is not logged in.');
+			return;
+		}
 
 		return Api.getImageList()
 			.then(results => {
@@ -35,13 +33,21 @@ export const loadUserImages = (showArchived?: boolean) => {
 					type: ActionType.LOAD_USER_IMAGES,
 					imgUserList: !!showArchived
 						? filteredResults
-						: filteredResults.filter(item => item.imgArchived === showArchived),
+						: filteredResults.filter(item => !item.imgArchived),
 				});
 			})
 			.catch(err => dispatch({ type: ActionType.LOAD_IMAGES_ERROR, error: `Unable to load images: ${err}` }));
 	};
 };
 
+export const clearImages = () => {
+	console.log('Clear Images');
+	return (dispatch: Dispatch<Action>) => {
+		dispatch({
+			type: ActionType.CLEAR_IMAGES,
+		});
+	}
+}
 
 export const archiveImage = (image: ImageInterface, imgArchived: boolean) => {
 	return (dispatch: Dispatch<Action>) => {
@@ -53,11 +59,11 @@ export const archiveImage = (image: ImageInterface, imgArchived: boolean) => {
 };
 
 export const setUserUID = (uid: string | null) => {
-    return (dispatch: Dispatch<Action>) => {
-        console.log("Setting UID in Redux:", uid);  // Log when setting UID
-        dispatch({
-            type: ActionType.SET_USER_UID,
-            uid: uid ?? null,
-        });
-    };
+	return (dispatch: Dispatch<Action>) => {
+		console.log("Setting UID in Redux:", uid);  // Log when setting UID
+		dispatch({
+			type: ActionType.SET_USER_UID,
+			uid: uid ?? null,
+		});
+	};
 };

@@ -4,14 +4,12 @@ import { ImageInterface } from 'type';
 
 const initialState: ImageInterface[] = [];
 
-const imagesReducer = (state: ImageInterface[] = initialState, action: Action) => {
+const userImagesReducer = (state: ImageInterface[] = initialState, action: Action) => {
     switch (action.type) {
-        case ActionType.LOAD_IMAGES:
-            return action.imgList;
+        case ActionType.LOAD_USER_IMAGES:
+            return action.imgUserList;
         case ActionType.CLEAR_IMAGES:
             return [];  // Reset state to initial empty array
-        case ActionType.LOAD_IMAGES_ERROR:
-            return action.error;
         case ActionType.ARCHIVE_IMAGE:
         default:
             return state;
@@ -19,4 +17,4 @@ const imagesReducer = (state: ImageInterface[] = initialState, action: Action) =
 };
 
 
-export default imagesReducer;
+export default userImagesReducer;
