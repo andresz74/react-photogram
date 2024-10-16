@@ -40,7 +40,6 @@ export const loadUserImages = (showArchived?: boolean) => {
 	};
 };
 
-
 export const clearImages = () => {
 	console.log('Clear Images');
 	return (dispatch: Dispatch<Action>) => {
@@ -49,7 +48,6 @@ export const clearImages = () => {
 		});
 	}
 }
-
 
 export const archiveImage = (image: ImageInterface, imgArchived: boolean) => {
 	return (dispatch: Dispatch<Action>) => {

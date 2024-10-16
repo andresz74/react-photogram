@@ -1,0 +1,48 @@
+.albumWrap {
+	display: flex;
+	flex-direction: column;
+	max-width: 935px;
+	width: 100%;
+}
+
+.albumHeader {
+	display: flex;
+	margin-bottom: 2em;
+}
+
+.albumHeaderMenu .menuItem {
+	display: inline-block;
+	cursor: pointer;
+}
+
+.albumRow {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	margin-bottom: 28px;
+}
+
+.photoWrap {
+	display: flex;
+	margin-bottom: 28px;
+	position: relative;
+}
+
+.photoActionLayer {
+	cursor: pointer;
+	display: block;
+	opacity: 0;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	top: 0;
+	z-index: 1;
+}
+
+.photoWrap img {
+	height: 293px;
+	object-fit: cover;
+	width: 293px;
+}

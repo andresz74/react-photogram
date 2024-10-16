@@ -1,4 +1,4 @@
-import { db, imagesDbCollection } from 'firebase.configuration'; // Removed `storage` as uploads are handled on the backend
+import { db, imagesDbCollection } from 'firebase.configuration';
 import { ImageInterface } from 'type';
 
 // Firestore reference
@@ -67,7 +67,7 @@ export const deleteImage = async (image: ImageInterface) => {
 		console.log(`Firestore document deleted: ${image.imgId}`);
 
 		// Call the backend API to delete the image from Firebase Storage
-		const response = await fetch(`http://192.168.1.181:3003/image-api/delete-image`, {
+		const response = await fetch(`https://192.168.1.181/image-api/delete-image`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',

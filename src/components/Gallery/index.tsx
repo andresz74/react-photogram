@@ -5,3 +5,4 @@ export { ModalImage } from './ModalImage';
 export { OverlayLayer } from './OverlayLayer';
 export { ShowGallery } from './ShowGallery';
 export { UploadImage } from './UploadImage';
+export { UserGallery } from './UserGallery';
