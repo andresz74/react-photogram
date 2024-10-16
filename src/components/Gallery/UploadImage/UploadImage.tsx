@@ -13,6 +13,7 @@ export const UploadImage: React.FC = () => {
 	const [isUploading, setIsUploading] = useState<boolean>(false); // New state to manage upload status
 
 	const userUID = useSelector((state: RootState) => state.auth.uid);
+	console.log('User UID:', userUID);
 
 	// Handle file selection
 	const handleChange = (files: FileList | null) => {
@@ -36,14 +37,19 @@ export const UploadImage: React.FC = () => {
 					setImageUploadProgress(100); // Set progress to complete
 
 					// Store the image metadata in Firestore
-					await db.collection(imagesDbCollection).add({
-						imgArchived: false,
-						imgSrc: imageUrl,
-						imgName: image.name,
-						imgUploadDate: Date.now(),
-						imgUserOwner: userUID,
-						imgPrivate: false,
-					});
+					try {
+						await db.collection(imagesDbCollection).add({
+							imgArchived: false,
+							imgSrc: imageUrl,
+							imgName: image.name,
+							imgUploadDate: Date.now(),
+							imgUserOwner: userUID,
+							imgPrivate: false,
+						});
+						console.log('Image uploaded and added to Firestore');
+					} catch (error) {
+						console.error('Error adding image metadata to Firestore:', error);
+					}
 					console.log('Image uploaded and added to Firestore');
 				} else {
 					console.error('Failed to upload image');
