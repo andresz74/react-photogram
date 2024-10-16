@@ -20,5 +20,4 @@ export {
 	OverlayLayer,
 	ShowGallery,
 	UploadImage,
-	UserGallery,
 };
