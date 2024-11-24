@@ -11,6 +11,8 @@ export const UploadImage: React.FC = () => {
 	const [imageUrl, setImageUrl] = useState<string | null>(null);
 	const [imageUploadProgress, setImageUploadProgress] = useState<number>(0);
 	const [isUploading, setIsUploading] = useState<boolean>(false); // New state to manage upload status
+	const [imageDescription, setImageDescription] = useState<string>('');
+	const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
 
 	const userUID = useSelector((state: RootState) => state.auth.uid);
 	console.log('User UID:', userUID);
@@ -20,6 +22,9 @@ export const UploadImage: React.FC = () => {
 		if (files) {
 			setImageUploadProgress(0); // Reset progress when a new file is selected
 			setImage(files[0]);
+			if (files && files[0]) {
+				setSelectedFileName(files[0].name); // Update state with file name
+			}
 		}
 	};
 
@@ -40,11 +45,12 @@ export const UploadImage: React.FC = () => {
 					try {
 						await db.collection(imagesDbCollection).add({
 							imgArchived: false,
-							imgSrc: imageUrl,
+							imgDescription: imageDescription || '',
 							imgName: image.name,
+							imgPrivate: false,
+							imgSrc: imageUrl,
 							imgUploadDate: Date.now(),
 							imgUserOwner: userUID,
-							imgPrivate: false,
 						});
 						console.log('Image uploaded and added to Firestore');
 					} catch (error) {
@@ -75,17 +81,33 @@ export const UploadImage: React.FC = () => {
 				</div>
 			</div>
 			<div className="uploadToolBody">
-				<div>
-					<progress className="progressBar" value={imageUploadProgress} max="100" />
-				</div>
-				<div className="inputFileWrap">
-					<input className="inputFile" type="file" onChange={(e) => handleChange(e.target.files)} />
-				</div>
-				<div className="buttonWrap">
-					<button className="buttonMain" onClick={handleUpload} disabled={!image || isUploading}>
-						{isUploading ? 'Uploading...' : 'Upload'}
-					</button>
-				</div>
+				{!imageUrl && <div className='uploadSection'>
+					<div className="inputFileWrap">
+						<input id="fileInput" className="inputFile" type="file" onChange={(e) => handleChange(e.target.files)} />
+						<label htmlFor="fileInput" className="customFileInputLabel">
+							Choose a file
+						</label>
+						{selectedFileName && <div className="fileName">{selectedFileName}</div>}
+					</div>
+					<div className="descriptionWrap">
+						<textarea
+							id="imageDescription"
+							className="textareaDescription"
+							placeholder="Enter a description for the image"
+							value={imageDescription}
+							onChange={(e) => setImageDescription(e.target.value)}
+						/>
+					</div>
+
+					<div className='progressBarWrap'>
+						<progress className="progressBar" value={imageUploadProgress} max="100" />
+					</div>
+					<div className="buttonWrap">
+						<button className="buttonMain" onClick={handleUpload} disabled={!image || isUploading}>
+							{isUploading ? 'Uploading...' : 'Upload'}
+						</button>
+					</div>
+				</div>}
 				<div>
 					{imageUploadProgress === 100 && <span className="fileUrl">Uploaded!</span>}
 					{imageUrl && <img className="filePreview" src={imageUrl} alt="" />}
