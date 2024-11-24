@@ -4,19 +4,21 @@ import './CoreModal.css';
 
 export interface ComponentProps extends Modal.Props {
 	className?: string;
-	overlayClassName?: string;
+	footerChildren?: React.ReactElement;
 	isOpen: boolean;
-	title?: string;
+	overlayClassName?: string;
+	headerChildren?: React.ReactElement;
 	onRequestClose?: (event: React.MouseEvent | React.KeyboardEvent) => void;
 }
 
 export const CoreModal: React.FC<ComponentProps & { children?: React.ReactNode }> = ({
-	className,
-	overlayClassName,
-	title,
-	isOpen,
-	onRequestClose,
 	children,
+	className,
+	footerChildren,
+	isOpen,
+	overlayClassName,
+	headerChildren,
+	onRequestClose,
 	...otherProps
 }) => {
 	const reactModalProps = { onRequestClose, ...otherProps };
@@ -38,11 +40,16 @@ export const CoreModal: React.FC<ComponentProps & { children?: React.ReactNode }
 			ariaHideApp={false}
 			{...reactModalProps}
 		>
-			<div className="modalHeader" onClick={handleOnClose}>
-				{title && <div className="modalTitle">{title}</div>}
-				<i className="icofont-close-line modalCloseIco"></i>
+			<i className="icofont-close-line modalCloseIco" onClick={handleOnClose}></i>
+			{headerChildren && <div className="modalHeader">
+				{headerChildren}
+			</div>}
+			<div className='modalBody'>
+				{children}
 			</div>
-			{children}
+			{footerChildren && <div className='modalFooter'>
+				{footerChildren}
+			</div>}
 		</Modal>
 	);
 };

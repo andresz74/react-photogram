@@ -5,11 +5,54 @@
 }
 
 .photoModalWrap {
+	display: flex;
+	flex: 1;
+	justify-content: center;
 }
 
-.photoModalWrap img {
-	height: 600px;
+.portrait {
+	flex-direction: row;
+}
+
+.landscape {
+	align-items: center;
+	flex-direction: column;
+}
+
+/* Styling for the image */
+.imageBox {
+	align-items: center;
+	background-color: var(--rich-black);
+	display: flex;
+	flex-basis: 66.66666667%;
+    max-width: 66.66666667%;
 	min-height: 450px;
-	max-width: 935px;
-	box-shadow: 5px 5px 15px -5px rgb(51, 51, 51, 0.75);
+}
+.imageBox > img {
+	max-height: 100%;
+	max-width: 100%;
+	object-fit: contain;
+	width: 100%;
+}
+
+/* Description box styling */
+.descriptionBox {
+    background-color: var(--rich-black-transparent-75);
+    box-sizing: border-box;
+	flex-basis: 33.33333333%;
+    max-width: 33.33333333%;
+}
+
+.dbBottom {
+    width: 100%;
+}
+
+.dbRight {
+    width: 33.333%;
+}
+
+.imgDescription {
+    color: var(--soft);
+	padding: 16px;
+	text-align: left;
 }

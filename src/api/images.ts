@@ -14,6 +14,7 @@ export const getImageList = async (): Promise<ImageInterface[]> => {
 		data.push({
 			imgId: doc.id,
 			imgArchived: doc.data().imgArchived,
+			imgDescription: doc.data().imgDescription,
 			imgName: doc.data().imgName,
 			imgPrivate: doc.data().imgPrivate,
 			imgSrc: doc.data().imgSrc,
@@ -39,7 +40,7 @@ export const uploadImage = async (image: File): Promise<string | null> => {
 
 	try {
 		// Make a POST request to the backend for image upload
-		const response = await fetch(`${config.apiBaseUrl}/upload`, {
+		const response = await fetch(`${config.apiBaseUrl}/resize-upload`, {
 			method: 'POST',
 			body: formData,
 		});

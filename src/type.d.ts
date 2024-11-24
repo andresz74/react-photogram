@@ -1,5 +1,6 @@
 export interface ImageInterface {
 	imgArchived: boolean;
+	imgDescription: string;
 	imgId?: string;
 	imgName: string;
 	imgPrivate: boolean;

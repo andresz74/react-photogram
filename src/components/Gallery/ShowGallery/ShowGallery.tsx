@@ -110,7 +110,7 @@ const ShowGalleryInternal: React.FC<ComponentProps> = ({ uid }) => {
 				)}
 			</div>
 			{modalImage !== null && (
-				<ModalImage imgSrc={modalImage.imgSrc} imgName={modalImage.imgName} isOpen={modalIsOpen} onClose={closeModal} />
+				<ModalImage imgSrc={modalImage.imgSrc} imgName={modalImage.imgName} imgDescription={modalImage.imgDescription} isOpen={modalIsOpen} onClose={closeModal} />
 			)}
 		</div>
 	);

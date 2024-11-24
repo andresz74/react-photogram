@@ -4,6 +4,36 @@
 @import url('https://fonts.googleapis.com/css2?family=Comforter+Brush&display=swap');
 @import 'assets/icofont.min.css';
 
+:root {
+    --font-roboto: "Roboto Mono", monospace;
+    --font-noto: "Noto Sans", sans-serif;
+
+    --red: #E63946;
+	--red-transparent-75: rgba(230, 57, 70, 0.75);
+	--red-transparent-50: rgba(230, 57, 70, 0.50);
+	--red-transparent-25: rgba(230, 57, 70, 0.25);
+    --soft: #F1FAEE;
+	--soft-transparent-75: rgba(241, 250, 238, 0.75);
+	--soft-transparent-50: rgba(241, 250, 238, 0.50);
+	--soft-transparent-25: rgba(241, 250, 238, 0.25);
+    --low-blue: #A8DADC;
+	--low-blue-transparent-75: rgba(168, 218, 220, 0.75);
+	--low-blue-transparent-50: rgba(168, 218, 220, 0.50);
+	--low-blue-transparent-25: rgba(168, 218, 220, 0.25);
+    --blue: #457B9D;
+	--blue-transparent-75: rgba(69, 123, 157, 0.75);
+	--blue-transparent-50: rgba(69, 123, 157, 0.50);
+	--blue-transparent-25: rgba(69, 123, 157, 0.25);
+	--strong-blue: #1D3557;
+	--strong-blue-transparent-75: rgba(29, 53, 87, 0.75);
+	--strong-blue-transparent-50: rgba(29, 53, 87, 0.50);
+	--strong-blue-transparent-25: rgba(29, 53, 87, 0.25);
+    --rich-black: #02040fff;
+	--rich-black-transparent-75: rgba(2, 4, 15, 0.75);
+	--rich-black-transparent-50: rgba(2, 4, 15, 0.50);
+	--rich-black-transparent-25: rgba(2, 4, 15, 0.25);
+}
+
 * {
 	box-sizing: border-box;
 }
@@ -16,7 +46,7 @@ html {
 }
 
 body {
-	background-color: #f1f2f7;
+	background-color: var(--soft);
 	color: #333;
 	line-height: 1;
 	margin: 0;
