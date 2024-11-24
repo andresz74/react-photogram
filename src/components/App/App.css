@@ -10,7 +10,6 @@
 	display: flex;
 	min-height: calc(100vh - 200px);
 	padding-bottom: 24px;
-	padding-top: 24px;
 	width: 100%;
 }
 
@@ -19,7 +18,7 @@
 }
 
 .App-link {
-	color: #61dafb;
+	color: var(--strong-blue);
 }
 
 @keyframes App-logo-spin {

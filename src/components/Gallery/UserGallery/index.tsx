@@ -1,1 +1,0 @@
-export { UserGallery } from './UserGallery';

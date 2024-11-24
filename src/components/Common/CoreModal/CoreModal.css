@@ -1,40 +1,72 @@
 .modalCore {
-	display: flex;
-	margin: auto;
-	flex-direction: column;
-}
-
-.modalCore:focus-visible {
-	outline: none;
+    display: flex;
+    margin: auto;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    outline: none; /* Remove default focus outline */
+    max-width: 90vw; /* Restrict modal size */
+    max-height: 100vh; /* Restrict modal size */
+    overflow: hidden; /* Prevent content overflow */
+    box-sizing: border-box;
 }
 
 .modalOverlay {
-	background-color: rgba(8, 8, 8, 0.8);
-	inset: 0px;
-	position: fixed;
-	display: flex;
+    background-color: var(--rich-black-transparent-75);
+    inset: 0;
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it’s above all other content */
 }
 
 .modalHeader {
-	color: #f1f2f7;
-	cursor: pointer;
-	display: flex;
-	flex-direction: row;
-    flex-wrap: nowrap;
-	font-size: 2.5em;
-	justify-content: flex-end;
-    margin-bottom: .25em;
-    max-width: 935px;
-	min-height: 1em;
-	position: relative;
+    align-items: center;
+    box-sizing: border-box;
+    color: var(--soft);
+    display: flex;
+    font-size: 1.2em;
+	height: 45px;
+    justify-content: space-between;
+    padding: 8px 0;
+    width: 100%;
 }
 
 .modalTitle {
-	display: flex;
-	font-size: .5em;
+    font-size: 1rem; /* Slightly smaller than header */
+    font-weight: bold; /* Make title prominent */
+    color: var(--soft);
+    text-align: center;
+    flex: 1; /* Allow the title to take remaining space */
+    margin-right: 8px; /* Add spacing between title and close icon */
 }
 
 .modalCloseIco {
+    cursor: pointer;
+    font-size: 2.25em; /* Slightly larger for better visibility */
+    color: var(--soft);
+    transition: color 0.3s;
 	position: absolute;
-	right: 0;
+	top: 16px;
+	right: 16px;
+}
+
+.modalCloseIco:hover {
+    color: #fff;
+}
+
+
+.modalBody {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-height: 90%; /* Limit body height */
+    overflow: hidden;
+}
+
+.modalFooter {
+	display: flex;
 }
