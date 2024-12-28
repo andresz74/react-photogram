@@ -18,14 +18,18 @@
 }
 
 .menuItem {
+	border-bottom: 1px solid var(--soft);
 	display: inline-block;
-	font-size: 0.815em;
+	font-size: 1rem;
 	margin-right: 16px;
 	text-transform: uppercase;
 }
 
-.menuItem a {
-	color: #333;
+.menuItem, .menuItem a {
+	color: var(--blue);
+}
+.menuItem:hover {
+	border-bottom: 1px solid var(--blue);
 }
 
 .itemClick {
@@ -33,8 +37,8 @@
 }
 
 .siteBranding {
+	color: var(--strong-blue);
 	margin: .85em 0;
-	/* font-family: 'Montserrat', sans-serif; */
-	font-family: 'Comforter Brush', cursive;
+	font-family: var(--font-comforter);
 	font-size: 3.5em;
 }

@@ -1,58 +1,87 @@
-.photoModalOverlay {
-}
-
-.photoModal {
-}
-
 .photoModalWrap {
-	display: flex;
-	flex: 1;
-	justify-content: center;
-}
-
-.portrait {
+	align-items: stretch;
+    display: flex;
+    flex: 1 1;
 	flex-direction: row;
-}
-
-.landscape {
-	align-items: center;
-	flex-direction: column;
+    justify-content: center;
+    max-width: 90vw; /* Prevent the modal from exceeding the viewport width */
+    max-height: 90vh; /* Prevent the modal from exceeding the viewport height */
+    box-sizing: border-box; /* Include padding and border in size calculations */
 }
 
 /* Styling for the image */
 .imageBox {
-	align-items: center;
-	background-color: var(--rich-black);
-	display: flex;
-	flex-basis: 66.66666667%;
-    max-width: 66.66666667%;
-	min-height: 450px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--rich-black);
+    flex-grow: 1; /* Allow the imageBox to take up remaining space */
+    max-width: 100%; /* Ensure the imageBox doesn't exceed the viewport width */
+    max-height: 100%; /* Ensure the imageBox doesn't exceed the viewport height */
+    overflow: hidden; /* Prevent image overflow */
+    box-sizing: border-box; /* Consistent sizing */
 }
+
 .imageBox > img {
-	max-height: 100%;
-	max-width: 100%;
-	object-fit: contain;
-	width: 100%;
+    object-fit: contain; /* Ensure the image retains aspect ratio */
+    display: block;
+    max-width: 100%; /* Prevent the image from exceeding the container width */
+    max-height: 100%; /* Prevent the image from exceeding the container height */
+    margin: auto; /* Center the image within the container */
 }
 
 /* Description box styling */
-.descriptionBox {
+.infoBox {
     background-color: var(--rich-black-transparent-75);
     box-sizing: border-box;
-	flex-basis: 33.33333333%;
-    max-width: 33.33333333%;
-}
-
-.dbBottom {
-    width: 100%;
-}
-
-.dbRight {
-    width: 33.333%;
+	display: flex;
+	flex: 1 1 100%;
+	flex-direction: column;
+    max-width: 500px; /* Prevent the infoBox from taking up too much space */
+    min-width: 405px; /* Ensure the infoBox has a minimum width */
+    padding: 16px; /* Add padding for better readability */
+    word-break: break-word; /* Handle long text */
 }
 
 .imgDescription {
     color: var(--soft);
-	padding: 16px;
-	text-align: left;
+    display: flex;
+    flex: 1 auto;
+    font-size: var(--system-16-font-size);
+    line-height: var(--system-16-line-height);
+    text-align: left;
+}
+
+.socialWrap {
+    align-items: center;
+    border-top: 1px solid var(--soft-transparent-25);
+    display: flex;
+    flex-direction: row;
+    height: 55px;
+}
+
+.socialIco {
+    margin-right: 16px;
+}
+.socialIco:first-child {
+    margin-left: 16px;
+}
+
+.multiLike {
+    display: flex;
+    flex-direction: row;
+}
+.multiLikeIcon {
+    display: flex;
+    margin-right: 8px;
+}
+.multiLikeIcon .iconLike {
+    color: var(--soft-transparent-25);
+    font-size: var(--system-24-font-size);
+}
+.multiLikeIcon .likesActive {
+	color: var(--red);
+}
+.multiLikeCount {
+    display: flex;
 }

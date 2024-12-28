@@ -46,6 +46,7 @@ export const UploadImage: React.FC = () => {
 						await db.collection(imagesDbCollection).add({
 							imgArchived: false,
 							imgDescription: imageDescription || '',
+							imgLikes: 0,
 							imgName: image.name,
 							imgPrivate: false,
 							imgSrc: imageUrl,

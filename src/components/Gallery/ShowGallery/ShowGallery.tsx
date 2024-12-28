@@ -34,7 +34,7 @@ const ShowGalleryInternal: React.FC<ComponentProps> = ({ uid }) => {
 
 	React.useEffect(() => {
 		try {
-			if (user && uid) {  // Only load images if UID is available
+			if (uid) {  // Only load images if UID is available
 				dispatch(actionCreators.loadUserImages(showArchivedImages));
 			} else {
 				dispatch(actionCreators.loadImages());
@@ -110,7 +110,7 @@ const ShowGalleryInternal: React.FC<ComponentProps> = ({ uid }) => {
 				)}
 			</div>
 			{modalImage !== null && (
-				<ModalImage imgSrc={modalImage.imgSrc} imgName={modalImage.imgName} imgDescription={modalImage.imgDescription} isOpen={modalIsOpen} onClose={closeModal} />
+				<ModalImage imgSrc={modalImage.imgSrc} imgName={modalImage.imgName} imgDescription={modalImage.imgDescription} imgLikes={modalImage.imgLikes} isOpen={modalIsOpen} onClose={closeModal} />
 			)}
 		</div>
 	);
