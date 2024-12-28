@@ -2,6 +2,7 @@ export interface ImageInterface {
 	imgArchived: boolean;
 	imgDescription: string;
 	imgId?: string;
+	imgLikes: number;
 	imgName: string;
 	imgPrivate: boolean;
 	imgSrc: string;

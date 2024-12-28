@@ -15,6 +15,7 @@ export const getImageList = async (): Promise<ImageInterface[]> => {
 			imgId: doc.id,
 			imgArchived: doc.data().imgArchived,
 			imgDescription: doc.data().imgDescription,
+			imgLikes: doc.data().imgLikes,
 			imgName: doc.data().imgName,
 			imgPrivate: doc.data().imgPrivate,
 			imgSrc: doc.data().imgSrc,
