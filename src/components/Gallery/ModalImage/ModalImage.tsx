@@ -12,9 +12,7 @@ export interface ComponentProps {
 }
 
 export const ModalImage: React.FC<ComponentProps> = ({ imgDescription, imgLikes, imgName, imgSrc, isOpen, onClose }) => {
-	const [isPortrait, setIsPortrait] = React.useState(false);
 	const [imgStyle, setImgStyle] = React.useState<React.CSSProperties>({});
-	const [imgBoxStyle, setImgBoxStyle] = React.useState<React.CSSProperties>({});
 
 	const elementRef = React.useRef<HTMLDivElement>(null);
 	// const [dimensions, setDimensions] = React.useState({ width: 0, height: 0 });
@@ -88,7 +86,7 @@ export const ModalImage: React.FC<ComponentProps> = ({ imgDescription, imgLikes,
 	return (
 		<CoreModal isOpen={isOpen} onRequestClose={onClose}>
 			<div className={`photoModalWrap`}>
-				<div className='imageBox' ref={elementRef} style={imgBoxStyle}>
+				<div className='imageBox' ref={elementRef}>
 					<img src={imgSrc} alt={imgName} style={imgStyle} />
 				</div>
 				<div className='infoBox'>
