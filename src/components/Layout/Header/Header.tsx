@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useIdleTimer } from 'react-idle-timer';
 import { AuthContext } from 'components';
 import { auth } from 'firebase.configuration';
@@ -7,11 +7,11 @@ import './Header.css';
 
 export const Header: React.FC = () => {
 	const user = React.useContext(AuthContext);
-	const history = useHistory();
+	const navigate = useNavigate();
 
 	const signOut = async () => {
 		await auth.signOut();
-		history.push('/');
+		navigate('/');
 	};
 	const handleOnIdle = (event: Event) => {
 		console.log('user is idle', event);

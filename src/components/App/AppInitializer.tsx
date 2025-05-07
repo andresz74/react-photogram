@@ -5,7 +5,7 @@ import { actionCreators } from 'state'; // Redux actions for setting UID
 import firebase from 'firebase/app'; // Import Firebase
 
 export const AppInitializer: React.FC = ({ children }) => {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<any>();
 
     useEffect(() => {
         // Set Firebase auth persistence to LOCAL

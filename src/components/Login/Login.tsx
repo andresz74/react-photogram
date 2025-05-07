@@ -1,18 +1,19 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { getUserData } from 'api';
 import { AuthContext } from 'components';
 import { auth } from 'firebase.configuration';
 import { actionCreators } from 'state';
+import type { AppDispatch } from 'state';
 import './Login.css';
 
 export const Login: React.FC = () => {
 	const user = React.useContext(AuthContext);
 	const emailRef = React.useRef<HTMLInputElement>(null);
 	const passwordRef = React.useRef<HTMLInputElement>(null);
-	const history = useHistory();
-	const dispatch = useDispatch();
+	const navigate = useNavigate();
+	const dispatch = useDispatch<AppDispatch>();
 
 	// Function to handle login and dispatch user UID
 	const LogIn = async () => {
@@ -26,7 +27,7 @@ export const Login: React.FC = () => {
 					getUserData(userUID);
 				}
 			}
-			history.push('/');
+			navigate('/');
 		} catch (error) {
 			console.error(error);
 		}

@@ -11,16 +11,16 @@
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
-    "@types/react-modal": "^3.13.1",
+    "@types/react-modal": "^3.16.3",
     "@types/react-router-dom": "^5.1.5",
     "firebase": "^7.17.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-idle-timer": "^4.6.4",
-    "react-modal": "^3.14.3",
-    "react-redux": "^7.2.5",
-    "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.3",
+    "react-modal": "^3.16.3",
+    "react-redux": "8",
+    "react-router-dom": "6",
+    "react-scripts": "5.0.1",
     "redux": "^4.1.1",
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.3.0",
@@ -28,9 +28,9 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "NODE_OPTIONS=--openssl-legacy-provider react-scripts start",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider react-scripts build",
+    "test": "NODE_OPTIONS=--openssl-legacy-provider react-scripts test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -55,6 +55,9 @@
     "@types/react-redux": "^7.1.20",
     "@types/redux": "^3.6.0",
     "@types/redux-thunk": "^2.1.0"
+  },
+  "resolutions": {
+    "postcss": "8.3.11"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
