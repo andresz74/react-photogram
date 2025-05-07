@@ -9,7 +9,7 @@ import './App.css';
 
 export const App: React.FC = () => {
 	Modal.setAppElement('#root');
-	const basename = process.env.NODE_ENV === 'production' ? '/photogram' : '/';
+	const basename = process.env.PUBLIC_URL || '/';
 	const uid = useSelector((state: RootState) => state.auth.uid); // Get the UID from Redux
 
 	return (
