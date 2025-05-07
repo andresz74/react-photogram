@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch } from 'state/store';
 import { useLocation } from 'react-router-dom';
 import { ArchiveImage, AuthContext, HideImage, ModalImage, OverlayLayer } from 'components';
 import { actionCreators } from 'state';
@@ -30,7 +31,8 @@ const ShowGalleryInternal: React.FC<ComponentProps> = ({ uid }) => {
 		uid ? state.userImages : state.images
 	);
 
-	const dispatch = useDispatch();
+	
+	const dispatch: AppDispatch = useDispatch();
 
 	React.useEffect(() => {
 		try {
