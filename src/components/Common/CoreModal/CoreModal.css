@@ -53,7 +53,7 @@
 }
 
 .modalCloseIco:hover {
-    color: #fff;
+    color: var(--color-white);
 }
 
 

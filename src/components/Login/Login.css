@@ -11,9 +11,9 @@
 }
 
 .loginFormInput > input {
-	background-color: rgb(255, 255, 255);
+	background-color: var(--color-white);
 	border: 1px solid;
-	border-color: rgba(51, 51, 51, 0.2);
+	border-color: var(--color-text-strong-transparent-20);
 	font-size: .75em;
 	line-height: 46px;
 	outline: 0;
@@ -29,9 +29,9 @@
 
 .loginFormButton > button {
 	/* background: rgba(51, 51, 51, 0.7); */
-    background: #333333;
+    background: var(--color-text-strong);
 	border: none;
-	color: #fff;
+	color: var(--color-white);
     font-size: .75em;
 	line-height: 46px;
 	margin: 0;

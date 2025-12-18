@@ -8,11 +8,15 @@ import './Header.css';
 export const Header: React.FC = () => {
 	const user = React.useContext(AuthContext);
 	const navigate = useNavigate();
+	const [menuOpen, setMenuOpen] = React.useState<boolean>(false);
 
 	const signOut = async () => {
 		await auth.signOut();
 		navigate('/');
+		setMenuOpen(false);
 	};
+
+	const closeMenu = () => setMenuOpen(false);
 	const handleOnIdle = (event: Event) => {
 		console.log('user is idle', event);
 		console.log('last active', getLastActiveTime());
@@ -38,29 +42,47 @@ export const Header: React.FC = () => {
 
 	return (
 		<header className="App-header">
-			<ul className="menuList">
+			<div className="headerBar">
+				<button
+					type="button"
+					className={`menuToggle ${menuOpen ? 'isOpen' : ''}`}
+					aria-expanded={menuOpen}
+					aria-label="Toggle navigation"
+					onClick={() => setMenuOpen(open => !open)}
+				>
+					<span />
+					<span />
+					<span />
+				</button>
+			</div>
+			<div
+				className={`menuOverlay ${menuOpen ? 'isOpen' : ''}`}
+				onClick={closeMenu}
+				role="presentation"
+			/>
+			<ul className={`menuList ${menuOpen ? 'isOpen' : ''}`}>
 				<li className="menuItem">
-					<Link className="menuLink" to="/">
+					<Link className="menuLink" to="/" onClick={closeMenu}>
 						{'Gallery'}
 					</Link>
 				</li>
 				{user && (
 					<li className="menuItem">
-						<Link className="menuLink" to="/upload">
+						<Link className="menuLink" to="/upload" onClick={closeMenu}>
 							Upload
 						</Link>
 					</li>
 				)}
 				{!user && (
 					<li className="menuItem">
-						<Link className="menuLink" to="/login">
+						<Link className="menuLink" to="/login" onClick={closeMenu}>
 							Login
 						</Link>
 					</li>
 				)}
 				{user && (
 					<li className="menuItem">
-						<Link className="menuLink" to="/mygallery">
+						<Link className="menuLink" to="/mygallery" onClick={closeMenu}>
 							{'My Gallery'}
 						</Link>
 					</li>
@@ -71,7 +93,6 @@ export const Header: React.FC = () => {
 					</li>
 				)}
 			</ul>
-
 			<div className="siteBranding">Photogram</div>
 		</header>
 	);

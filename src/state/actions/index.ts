@@ -20,6 +20,10 @@ interface ArchiveImages {
 	type: ActionType.ARCHIVE_IMAGE;
 }
 
+interface TogglePrivateImage {
+	type: ActionType.TOGGLE_PRIVATE_IMAGE;
+}
+
 interface SetUserUIDAction {
 	type: ActionType.SET_USER_UID;
 	uid: string | null;
@@ -29,5 +33,11 @@ interface ClearImagesAction {
 	type: ActionType.CLEAR_IMAGES;
 }
 
-export type Action = LoadImagesAction | LoadUserImagesAction | LoadImagesErrorAction | ArchiveImages | SetUserUIDAction | ClearImagesAction;
-
+export type Action =
+	| LoadImagesAction
+	| LoadUserImagesAction
+	| LoadImagesErrorAction
+	| ArchiveImages
+	| TogglePrivateImage
+	| SetUserUIDAction
+	| ClearImagesAction;

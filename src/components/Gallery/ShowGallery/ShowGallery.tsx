@@ -53,10 +53,27 @@ const ShowGalleryInternal: React.FC<ComponentProps> = ({ uid }) => {
 		};
 	}, [location.pathname, dispatch]);
 
-	const handleArchiveImage = (data: ImageInterface, archived: boolean) => {
+	const handleArchiveImage = async (data: ImageInterface, archived: boolean) => {
 		try {
-			dispatch(actionCreators.archiveImage(data, archived));
-			dispatch(actionCreators.loadImages());
+			await dispatch(actionCreators.archiveImage(data, archived));
+			if (uid) {
+				dispatch(actionCreators.loadUserImages(showArchivedImages));
+			} else {
+				dispatch(actionCreators.loadImages());
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+	const handlePrivateImage = async (data: ImageInterface, isPrivate: boolean) => {
+		try {
+			await dispatch(actionCreators.togglePrivateImage(data, isPrivate));
+			if (uid) {
+				dispatch(actionCreators.loadUserImages(showArchivedImages));
+			} else {
+				dispatch(actionCreators.loadImages());
+			}
 		} catch (error) {
 			console.error(error);
 		}
@@ -98,7 +115,7 @@ const ShowGalleryInternal: React.FC<ComponentProps> = ({ uid }) => {
 											/>
 											<HideImage
 												imgData={imageItem}
-												handleHideImage={handleArchiveImage}
+												handleHideImage={handlePrivateImage}
 												imgPrivate={imageItem.imgPrivate}
 											/>
 										</>

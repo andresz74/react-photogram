@@ -15,9 +15,9 @@ export const HideImage: React.FC<ComponentProps> = ({ imgPrivate, imgData, handl
 			onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => handleHideImage(imgData, imgPrivate)}
 		>
 			{!imgPrivate ? (
-				<i className="icofont-eye-close" title="Hide Image"></i>
+				<i className="icofont-eye-blocked" title="Hide Image"></i>
 			) : (
-				<i className="icofont-eye-open" title="Show Image"></i>
+				<i className="icofont-eye" title="Show Image"></i>
 			)}
 		</div>
 	);

@@ -11,7 +11,7 @@ const imagesReducer = (state: ImageInterface[] = initialState, action: Action) =
         case ActionType.CLEAR_IMAGES:
             return [];  // Reset state to initial empty array
         case ActionType.LOAD_IMAGES_ERROR:
-            return action.error;
+            return state;  // Preserve last good state on error
         case ActionType.ARCHIVE_IMAGE:
         default:
             return state;
