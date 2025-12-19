@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from 'state/store';
 import { useLocation } from 'react-router-dom';
-import { ArchiveImage, AuthContext, HideImage, ModalImage, OverlayLayer } from 'components';
+import { ArchiveImage, HideImage, ModalImage, OverlayLayer } from 'components';
 import { actionCreators } from 'state';
 import { RootState } from 'state/reducers';
 import { ImageInterface } from 'type';
@@ -13,7 +13,6 @@ export interface ComponentProps {
 }
 
 const ShowGalleryInternal: React.FC<ComponentProps> = ({ uid }) => {
-	const user = React.useContext(AuthContext);
 	const [modalIsOpen, setModalIsOpen] = React.useState<boolean>(false);
 	const [modalImage, setModalImage] = React.useState<ImageInterface | null>(null);
 	// To hide archived images
