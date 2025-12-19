@@ -81,11 +81,6 @@ const ShowGalleryInternal: React.FC<ComponentProps> = ({ uid }) => {
 
 	return (
 		<div className="albumWrap">
-			<div>
-				{uid && user ? (
-					<h2>Welcome {user.displayName}, here’s your personal gallery.</h2>
-				) : null}
-			</div>
 			<div className="albumHeader">
 				<div className="albumHeaderMenu">
 					{uid && (
