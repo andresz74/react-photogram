@@ -1,9 +1,9 @@
 .uploadToolWrap {
 	align-self: flex-start;
-	background-color: #f1f2f7;
+	background-color: var(--color-surface);
 	border-radius: 0.5em;
-	box-shadow: 0 0 1.5em -0.5em #333;
-	color: #333;
+	box-shadow: var(--shadow-elevated);
+	color: var(--color-text-strong);
 	display: flex;
 	flex-direction: column;
 	min-height: 300px;
@@ -14,7 +14,7 @@
 	background-color: var(--strong-blue);
 	border-top-left-radius: 0.5em;
 	border-top-right-radius: 0.5em;
-	color: #f1f1f1;
+	color: var(--color-surface-alt);
 	display: flex;
 	flex-direction: row;
 	font-size: 1rem;
@@ -32,7 +32,7 @@
 }
 
 .headerCloseBtn a {
-	color: #f1f2f7;
+	color: var(--color-surface);
 }
 
 .uploadToolBody {
@@ -80,7 +80,7 @@
 .customFileInputLabel {
     display: inline-block;
     padding: 10px 20px;
-    color: #fff;
+    color: var(--color-white);
     background-color: var(--blue);
     border: none;
     border-radius: 4px;
@@ -101,7 +101,7 @@
     display: block;
     margin-top: 8px;
     font-size: 0.875rem;
-    color: #555;
+    color: var(--color-text-muted);
 } */
 
 .fileName {
@@ -117,7 +117,7 @@
 }
 
 .textareaDescription {
-	background-color: #f1f2f7;
+	background-color: var(--color-surface);
 	border: 1px solid var(--low-blue);
 	color: var(--strong-blue);
 	display: flex;
@@ -142,7 +142,7 @@
 
 .filePreview {
 	border-radius: 0.25em;
-	box-shadow: 0 0 1em -0.5em #333;
+	box-shadow: var(--shadow-soft);
 	height: auto;
 	width: 100%;
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from 'state/store';
 import { useLocation } from 'react-router-dom';
-import { ArchiveImage, AuthContext, HideImage, ModalImage, OverlayLayer } from 'components';
+import { ArchiveImage, HideImage, ModalImage, OverlayLayer } from 'components';
 import { actionCreators } from 'state';
 import { RootState } from 'state/reducers';
 import { ImageInterface } from 'type';
@@ -13,7 +13,6 @@ export interface ComponentProps {
 }
 
 const ShowGalleryInternal: React.FC<ComponentProps> = ({ uid }) => {
-	const user = React.useContext(AuthContext);
 	const [modalIsOpen, setModalIsOpen] = React.useState<boolean>(false);
 	const [modalImage, setModalImage] = React.useState<ImageInterface | null>(null);
 	// To hide archived images
@@ -53,10 +52,27 @@ const ShowGalleryInternal: React.FC<ComponentProps> = ({ uid }) => {
 		};
 	}, [location.pathname, dispatch]);
 
-	const handleArchiveImage = (data: ImageInterface, archived: boolean) => {
+	const handleArchiveImage = async (data: ImageInterface, archived: boolean) => {
 		try {
-			dispatch(actionCreators.archiveImage(data, archived));
-			dispatch(actionCreators.loadImages());
+			await dispatch(actionCreators.archiveImage(data, archived));
+			if (uid) {
+				dispatch(actionCreators.loadUserImages(showArchivedImages));
+			} else {
+				dispatch(actionCreators.loadImages());
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+	const handlePrivateImage = async (data: ImageInterface, isPrivate: boolean) => {
+		try {
+			await dispatch(actionCreators.togglePrivateImage(data, isPrivate));
+			if (uid) {
+				dispatch(actionCreators.loadUserImages(showArchivedImages));
+			} else {
+				dispatch(actionCreators.loadImages());
+			}
 		} catch (error) {
 			console.error(error);
 		}
@@ -64,11 +80,6 @@ const ShowGalleryInternal: React.FC<ComponentProps> = ({ uid }) => {
 
 	return (
 		<div className="albumWrap">
-			<div>
-				{uid && user ? (
-					<h2>Welcome {user.displayName}, here’s your personal gallery.</h2>
-				) : null}
-			</div>
 			<div className="albumHeader">
 				<div className="albumHeaderMenu">
 					{uid && (
@@ -98,7 +109,7 @@ const ShowGalleryInternal: React.FC<ComponentProps> = ({ uid }) => {
 											/>
 											<HideImage
 												imgData={imageItem}
-												handleHideImage={handleArchiveImage}
+												handleHideImage={handlePrivateImage}
 												imgPrivate={imageItem.imgPrivate}
 											/>
 										</>

@@ -34,7 +34,7 @@
 	background-color: var(--strong-blue);
 	border: 1px solid transparent;
 	border-radius: 0.25em;
-	color: #f1f2f7;
+	color: var(--color-surface);
 	padding: 0.75em 1.5em;
 	text-transform: uppercase;
 }

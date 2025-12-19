@@ -1,5 +1,5 @@
 .deleteIconWrapper {
-	color: #f1f2f7;
+	color: var(--color-surface);
 	font-size: 1.5em;
 	position: absolute;
 	right: 0.5em;

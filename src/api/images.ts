@@ -1,3 +1,4 @@
+import firebase from 'firebase/app';
 import { db, imagesDbCollection } from 'firebase.configuration';
 import { ImageInterface } from 'type';
 import config from '../config';
@@ -5,27 +6,39 @@ import config from '../config';
 // Firestore reference
 const imagesRef = db.collection(imagesDbCollection);
 
-// Function to get the list of images from Firestore
-export const getImageList = async (): Promise<ImageInterface[]> => {
-	const snapshot = await imagesRef.get();
-	const data: ImageInterface[] = [];
+const mapSnapshotToImages = (snapshot: firebase.firestore.QuerySnapshot): ImageInterface[] =>
+	snapshot.docs.map(doc => ({
+		imgId: doc.id,
+		imgArchived: doc.data().imgArchived,
+		imgDescription: doc.data().imgDescription,
+		imgLikes: doc.data().imgLikes,
+		imgName: doc.data().imgName,
+		imgPrivate: doc.data().imgPrivate,
+		imgSrc: doc.data().imgSrc,
+		imgUploadDate: doc.data().imgUploadDate,
+		imgUserOwner: doc.data().imgUserOwner,
+	}));
 
-	snapshot.forEach(doc => {
-		data.push({
-			imgId: doc.id,
-			imgArchived: doc.data().imgArchived,
-			imgDescription: doc.data().imgDescription,
-			imgLikes: doc.data().imgLikes,
-			imgName: doc.data().imgName,
-			imgPrivate: doc.data().imgPrivate,
-			imgSrc: doc.data().imgSrc,
-			imgUploadDate: doc.data().imgUploadDate,
-			imgUserOwner: doc.data().imgUserOwner,
-		});
-	});
-	console.log(data);
+// Get only public, non-archived images ordered by upload date (newest first)
+export const getPublicImages = async (): Promise<ImageInterface[]> => {
+	const snapshot = await imagesRef.where('imgArchived', '==', false).get();
+	return mapSnapshotToImages(snapshot)
+		.filter(img => img.imgPrivate === false)
+		.sort((a, b) => b.imgUploadDate - a.imgUploadDate);
+};
 
-	return data;
+// Get images for a specific user; optionally include archived ones
+export const getUserImages = async (uid: string, includeArchived?: boolean): Promise<ImageInterface[]> => {
+	const snapshot = await imagesRef.where('imgUserOwner', '==', uid).get();
+	return mapSnapshotToImages(snapshot)
+		.filter(img => includeArchived ? true : img.imgArchived === false)
+		.sort((a, b) => b.imgUploadDate - a.imgUploadDate);
+};
+
+// Function to set image privacy (private/public)
+export const setImagePrivacy = async (image: ImageInterface, isCurrentlyPrivate: boolean) => {
+	const imageDocRef = db.collection(imagesDbCollection).doc(image.imgId);
+	await imageDocRef.update({ imgPrivate: !isCurrentlyPrivate });
 };
 
 // Function to archive/unarchive an image

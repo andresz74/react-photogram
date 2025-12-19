@@ -1,2 +1,2 @@
-export { getImageList, archiveImage, deleteImage, uploadImage } from './images';
+export { getPublicImages, getUserImages, archiveImage, deleteImage, uploadImage, setImagePrivacy } from './images';
 export { getUserData } from './users';
