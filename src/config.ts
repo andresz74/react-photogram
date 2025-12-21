@@ -2,8 +2,8 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 
 const config = {
   apiBaseUrl: isDevelopment
-    ? 'http://192.168.1.181:3003'  // In development, point to your Nginx server or local deployment (http://localhost:3003)
-    : process.env.API_URL,  // In production, the same /api as Nginx will serve it
+    ? 'http://192.168.1.181:3003'  // Replace with your development API base URL
+    : process.env.API_URL, // In production, use the API URL from environment variables
 };
 
 export default config;
