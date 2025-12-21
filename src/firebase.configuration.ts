@@ -9,6 +9,7 @@ export const firebaseConfig = {
     projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID!,
     messagingSenderId: '169824492279',
     appId: process.env.REACT_APP_FIREBASE_APP_ID!,
+    measurementId: "G-2D2NQQF8YB"
 };
 
 // Firestore collections
