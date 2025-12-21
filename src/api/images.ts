@@ -51,7 +51,6 @@ export const archiveImage = async (image: ImageInterface, imgArchived: boolean) 
 export const uploadImage = async (image: File): Promise<string | null> => {
 	const formData = new FormData();
 	formData.append('image', image);
-	console.log(config.apiBaseUrl);
 
 	try {
 		// Make a POST request to the backend for image upload
