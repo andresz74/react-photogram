@@ -82,6 +82,7 @@ REACT_APP_FIREBASE_API_KEY=your-api-key
 REACT_APP_FIREBASE_AUTH_DOMAIN=photograma-c2078.firebaseapp.com
 REACT_APP_FIREBASE_PROJECT_ID=photograma-c2078
 REACT_APP_FIREBASE_APP_ID=1:169824492279:web:186aa32b5777f06edd51f2
+REACT_APP_API_URL=http://localhost:3003
 ```
 
 This ensures your Firebase credentials are kept **secure** and not hard-coded into your project.
