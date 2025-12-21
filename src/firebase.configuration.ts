@@ -6,7 +6,6 @@ import 'firebase/firestore';
 export const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY!,
     authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN!,
-    databaseURL: 'https://reactblogmd.firebaseio.com',
     projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID!,
     messagingSenderId: '169824492279',
     appId: process.env.REACT_APP_FIREBASE_APP_ID!,
