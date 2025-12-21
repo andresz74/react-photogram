@@ -1,4 +1,4 @@
-const isDevelopment = process.env.NODE_ENV === 'development';
+// const isDevelopment = process.env.NODE_ENV === 'development';
 
 const config = {
   apiBaseUrl: process.env.REACT_APP_API_URL || '',
