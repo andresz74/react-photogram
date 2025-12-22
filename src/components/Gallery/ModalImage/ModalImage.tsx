@@ -24,9 +24,7 @@ export const ModalImage: React.FC<ComponentProps> = ({ imgDescription, imgLikes,
 	}, [imgSrc, isOpen]);
 
 	// const imgTitle = <div className="modalTitle">{imgName && <span>{imgName}</span>}</div>
-	const handleOnLike = React.useCallback((event: React.MouseEvent): void => {
-		console.log('I like it');
-	}, []);
+	const handleOnLike = React.useCallback((): void => {}, []);
 
 	const handleToggleZoom = React.useCallback(() => {
 		if (!isLoaded || hasError) return;
@@ -61,25 +59,35 @@ export const ModalImage: React.FC<ComponentProps> = ({ imgDescription, imgLikes,
 						onLoad={() => setIsLoaded(true)}
 						onError={() => setHasError(true)}
 						onClick={handleToggleZoom}
-					/>
-				</div>
-				<div className='infoBox'>
-					<div className='imgDescription'>{imgDescription || null}</div>
-					<div className='socialWrap'>
-						<span className={`socialIco multiLike`}>
-							<span className='multiLikeIcon'>
-								<i className={`icofont-heart iconLike ${imgLikes && 'likesActive'}`} onClick={handleOnLike}></i>
+						/>
+					</div>
+					<div className='infoBox'>
+						<div className='imgDescription'>{imgDescription || null}</div>
+						<div className='socialWrap'>
+							<span className={`socialIco multiLike`}>
+								<span className='multiLikeIcon'>
+									<button
+										type="button"
+										className="likeButton"
+										aria-label="Like image"
+										onClick={handleOnLike}
+									>
+										<i
+											className={`icofont-heart iconLike ${imgLikes ? 'likesActive' : ''}`}
+											aria-hidden="true"
+										/>
+									</button>
+								</span>
+								<span className='multiLikeCount'>{imgLikes}</span>
 							</span>
-							<span className='multiLikeCount'>{imgLikes}</span>
-						</span>
-						{/* <span className='socialIco'>Comment</span>
-						<span className='socialIco'>Share</span>
-						<span className='socialIco'>Favorite</span> */}
+							{/* <span className='socialIco'>Comment</span>
+							<span className='socialIco'>Share</span>
+							<span className='socialIco'>Favorite</span> */}
+						</div>
 					</div>
 				</div>
-			</div>
-		</CoreModal>
-	);
-};
+			</CoreModal>
+		);
+	};
 
 ModalImage.displayName = 'ModalImage';

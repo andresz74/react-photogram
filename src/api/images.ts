@@ -1,38 +1,69 @@
 import firebase from 'firebase/app';
-import { db, imagesDbCollection } from 'firebase.configuration';
+import { auth, db, imagesDbCollection } from 'firebase.configuration';
 import { ImageInterface } from 'type';
 import config from '../config';
+import { logger } from 'utils/logger';
 
 // Firestore reference
 const imagesRef = db.collection(imagesDbCollection);
 
+const getAuthToken = async (): Promise<string> => {
+	const user = auth.currentUser;
+
+	if (!user) {
+		throw new Error('User must be authenticated to perform this action.');
+	}
+
+	return user.getIdToken();
+};
+
 const mapSnapshotToImages = (snapshot: firebase.firestore.QuerySnapshot): ImageInterface[] =>
-	snapshot.docs.map(doc => ({
-		imgId: doc.id,
-		imgArchived: doc.data().imgArchived,
-		imgDescription: doc.data().imgDescription,
-		imgLikes: doc.data().imgLikes,
-		imgName: doc.data().imgName,
-		imgPrivate: doc.data().imgPrivate,
-		imgSrc: doc.data().imgSrc,
-		imgUploadDate: doc.data().imgUploadDate,
-		imgUserOwner: doc.data().imgUserOwner,
-	}));
+	snapshot.docs.map(doc => {
+		const data = doc.data();
+		const uploadDateRaw = data.imgUploadDate as unknown;
+		const imgUploadDate =
+			typeof uploadDateRaw === 'number'
+				? uploadDateRaw
+				: uploadDateRaw && typeof (uploadDateRaw as any).toMillis === 'function'
+					? (uploadDateRaw as any).toMillis()
+					: 0;
+
+		return {
+			imgId: doc.id,
+			imgArchived: Boolean(data.imgArchived),
+			imgDescription: data.imgDescription ?? '',
+			imgLikes: Number(data.imgLikes ?? 0),
+			imgName: data.imgName ?? '',
+			imgPrivate: Boolean(data.imgPrivate),
+			imgSrc: data.imgSrc ?? '',
+			imgUploadDate,
+			imgUserOwner: data.imgUserOwner ?? '',
+		};
+	});
+
+const sortNewestFirst = (images: ImageInterface[]) =>
+	[...images].sort((a, b) => (b.imgUploadDate ?? 0) - (a.imgUploadDate ?? 0));
 
 // Get only public, non-archived images ordered by upload date (newest first)
 export const getPublicImages = async (): Promise<ImageInterface[]> => {
-	const snapshot = await imagesRef.where('imgArchived', '==', false).get();
-	return mapSnapshotToImages(snapshot)
-		.filter(img => img.imgPrivate === false)
-		.sort((a, b) => b.imgUploadDate - a.imgUploadDate);
+	const snapshot = await imagesRef
+		.where('imgArchived', '==', false)
+		.where('imgPrivate', '==', false)
+		.get();
+
+	return sortNewestFirst(mapSnapshotToImages(snapshot));
 };
 
 // Get images for a specific user; optionally include archived ones
 export const getUserImages = async (uid: string, includeArchived?: boolean): Promise<ImageInterface[]> => {
-	const snapshot = await imagesRef.where('imgUserOwner', '==', uid).get();
-	return mapSnapshotToImages(snapshot)
-		.filter(img => includeArchived ? true : img.imgArchived === false)
-		.sort((a, b) => b.imgUploadDate - a.imgUploadDate);
+	let query: firebase.firestore.Query = imagesRef.where('imgUserOwner', '==', uid);
+
+	if (!includeArchived) {
+		query = query.where('imgArchived', '==', false);
+	}
+
+	const snapshot = await query.get();
+	return sortNewestFirst(mapSnapshotToImages(snapshot));
 };
 
 // Function to set image privacy (private/public)
@@ -51,16 +82,20 @@ export const archiveImage = async (image: ImageInterface, imgArchived: boolean) 
 export const uploadImage = async (image: File): Promise<string | null> => {
 	const formData = new FormData();
 	formData.append('image', image);
+	const authToken = await getAuthToken();
 
 	try {
 		// Make a POST request to the backend for image upload
 		const response = await fetch(`${config.apiBaseUrl}/resize-upload`, {
 			method: 'POST',
+			headers: {
+				Authorization: `Bearer ${authToken}`,
+			},
 			body: formData,
 		});
 
 		const result = await response.json();
-        console.log('Upload response:', result);
+		logger.debug('Upload response:', result);
 
 		if (response.ok) {
 			return result.url; // Return the uploaded image URL
@@ -78,21 +113,24 @@ export const uploadImage = async (image: File): Promise<string | null> => {
 export const deleteImage = async (image: ImageInterface) => {
 	// Delete image document from Firestore
 	const imageDocRef = db.collection(imagesDbCollection).doc(image.imgId);
+	const authToken = await getAuthToken();
+
 	try {
 		await imageDocRef.delete();
-		console.log(`Firestore document deleted: ${image.imgId}`);
+		logger.debug('Firestore document deleted:', image.imgId);
 
 		// Call the backend API to delete the image from Firebase Storage
 		const response = await fetch(`${config.apiBaseUrl}/delete-image`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
+				Authorization: `Bearer ${authToken}`,
 			},
 			body: JSON.stringify({ imgName: image.imgName }),
 		});
 
 		if (response.ok) {
-			console.log(`Image successfully deleted from Firebase Storage: ${image.imgName}`);
+			logger.debug('Image deleted from Firebase Storage:', image.imgName);
 		} else {
 			console.error('Error deleting image from Firebase Storage:', await response.text());
 		}
