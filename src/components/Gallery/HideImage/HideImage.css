@@ -5,8 +5,18 @@
 	right: 0.5em;
 	top: 3em;
 	z-index: 10;
+	background: transparent;
+	border: 0;
+	padding: 0;
+	cursor: pointer;
 }
 
 .hideIconWrapper i {
 	display: inline-block;
+}
+
+.hideIconWrapper:focus-visible {
+	outline: 2px solid var(--color-surface);
+	outline-offset: 2px;
+	border-radius: 6px;
 }

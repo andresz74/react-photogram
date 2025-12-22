@@ -1,6 +1,7 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
+import { logger } from 'utils/logger';
 
 // Firebase configuration object
 export const firebaseConfig = {
@@ -25,8 +26,8 @@ const app = !firebase.apps.length
 // Firebase authentication setup
 export const auth = firebase.auth();
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-    .then(() => console.log('Firebase persistence set to LOCAL'))
-    .catch((error) => console.error('Error setting Firebase persistence:', error));
+    .then(() => logger.debug('Firebase persistence set to LOCAL'))
+    .catch((error) => logger.error('Error setting Firebase persistence:', error));
 
 // Initialize Firestore
 export const db = firebase.firestore(app);

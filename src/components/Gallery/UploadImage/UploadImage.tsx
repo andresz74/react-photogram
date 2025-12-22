@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { db, imagesDbCollection } from 'firebase.configuration';
 import { uploadImage } from 'api';
 import { RootState } from 'state/reducers';
+import { logger } from 'utils/logger';
 import './UploadImage.css';
 
 export const UploadImage: React.FC = () => {
@@ -15,7 +16,7 @@ export const UploadImage: React.FC = () => {
 	const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
 
 	const userUID = useSelector((state: RootState) => state.auth.uid);
-	console.log('User UID:', userUID);
+	logger.debug('User UID:', userUID);
 
 	// Handle file selection
 	const handleChange = (files: FileList | null) => {
@@ -34,12 +35,12 @@ export const UploadImage: React.FC = () => {
 			setIsUploading(true); // Disable upload button after upload starts
 			setImageUploadProgress(10); // Set initial progress state (optional)
 
-			try {
-				// Use the API call to upload the image to the backend
-				const imageUrl = await uploadImage(image);
-				if (imageUrl) {
-					setImageUrl(imageUrl);
-					setImageUploadProgress(100); // Set progress to complete
+		try {
+			// Use the API call to upload the image to the backend
+			const imageUrl = await uploadImage(image);
+			if (imageUrl) {
+				setImageUrl(imageUrl);
+				setImageUploadProgress(100); // Set progress to complete
 
 					// Store the image metadata in Firestore
 					try {
@@ -53,11 +54,11 @@ export const UploadImage: React.FC = () => {
 							imgUploadDate: Date.now(),
 							imgUserOwner: userUID,
 						});
-						console.log('Image uploaded and added to Firestore');
+						logger.debug('Image uploaded and added to Firestore');
 					} catch (error) {
 						console.error('Error adding image metadata to Firestore:', error);
 					}
-					console.log('Image uploaded and added to Firestore');
+					logger.debug('Image uploaded and added to Firestore');
 				} else {
 					console.error('Failed to upload image');
 				}

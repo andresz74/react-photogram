@@ -1,6 +1,7 @@
 import React from 'react';
 import { ImageInterface } from 'type';
 import { deleteImage } from 'api';
+import { logger } from 'utils/logger';
 import './DeleteImage.css';
 
 export interface ComponentProps {
@@ -11,7 +12,7 @@ export interface ComponentProps {
 export const handleDeleteImage = async (data: ImageInterface) => {
 	try {
 		await deleteImage(data);
-		console.log(`Image with ID ${data.imgId} deleted successfully`);
+		logger.debug('Image deleted successfully', data.imgId);
 	} catch (error) {
 		console.error('Error deleting image:', error);
 	}

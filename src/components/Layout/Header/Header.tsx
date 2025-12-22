@@ -1,12 +1,14 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useIdleTimer } from 'react-idle-timer';
-import { AuthContext } from 'components';
+import { useSelector } from 'react-redux';
+import { RootState } from 'state/reducers';
 import { auth } from 'firebase.configuration';
+import { logger } from 'utils/logger';
 import './Header.css';
 
 export const Header: React.FC = () => {
-	const user = React.useContext(AuthContext);
+	const uid = useSelector((state: RootState) => state.auth.uid);
 	const navigate = useNavigate();
 	const [menuOpen, setMenuOpen] = React.useState<boolean>(false);
 
@@ -18,18 +20,18 @@ export const Header: React.FC = () => {
 
 	const closeMenu = () => setMenuOpen(false);
 	const handleOnIdle = (event: Event) => {
-		console.log('user is idle', event);
-		console.log('last active', getLastActiveTime());
+		logger.debug('User is idle', event);
+		logger.debug('Last active', getLastActiveTime());
 		signOut();
 	};
 
 	const handleOnActive = (event: Event) => {
-		console.log('user is active', event);
-		console.log('time remaining', getRemainingTime());
+		logger.debug('User is active', event);
+		logger.debug('Time remaining', getRemainingTime());
 	};
 
 	const handleOnAction = (event: Event) => {
-		console.log('user did something', event);
+		logger.debug('User action', event);
 	};
 
 	const { getRemainingTime, getLastActiveTime } = useIdleTimer({
@@ -61,38 +63,38 @@ export const Header: React.FC = () => {
 				role="presentation"
 			/>
 			<ul className={`menuList ${menuOpen ? 'isOpen' : ''}`}>
-				<li className="menuItem">
-					<Link className="menuLink" to="/" onClick={closeMenu}>
-						{'Gallery'}
-					</Link>
-				</li>
-				{user && (
 					<li className="menuItem">
-						<Link className="menuLink" to="/upload" onClick={closeMenu}>
-							Upload
+						<Link className="menuLink" to="/" onClick={closeMenu}>
+							{'Gallery'}
 						</Link>
 					</li>
-				)}
-				{!user && (
-					<li className="menuItem">
-						<Link className="menuLink" to="/login" onClick={closeMenu}>
-							Login
-						</Link>
-					</li>
-				)}
-				{user && (
-					<li className="menuItem">
-						<Link className="menuLink" to="/mygallery" onClick={closeMenu}>
-							{'My Gallery'}
-						</Link>
-					</li>
-				)}
-				{user && (
-					<li className="menuItem itemClick" onClick={signOut}>
-						Sign out
-					</li>
-				)}
-			</ul>
+					{uid && (
+						<li className="menuItem">
+							<Link className="menuLink" to="/upload" onClick={closeMenu}>
+								Upload
+							</Link>
+						</li>
+					)}
+					{!uid && (
+						<li className="menuItem">
+							<Link className="menuLink" to="/login" onClick={closeMenu}>
+								Login
+							</Link>
+						</li>
+					)}
+					{uid && (
+						<li className="menuItem">
+							<Link className="menuLink" to="/mygallery" onClick={closeMenu}>
+								{'My Gallery'}
+							</Link>
+						</li>
+					)}
+					{uid && (
+						<li className="menuItem itemClick" onClick={signOut}>
+							Sign out
+						</li>
+					)}
+				</ul>
 			<div className="siteBranding">Photogram</div>
 		</header>
 	);

@@ -26,23 +26,17 @@ const ShowGalleryInternal: React.FC<ComponentProps> = ({ uid }) => {
 
 	const closeModal = () => setModalIsOpen(false);
 
-	const imagesData = useSelector((state: RootState) =>
-		uid ? state.userImages : state.images
-	);
+	const imagesData = useSelector<RootState, ImageInterface[]>((state) => (uid ? state.userImages : state.images));
 
 	
 	const dispatch: AppDispatch = useDispatch();
 
 	React.useEffect(() => {
-		try {
-			if (uid) {  // Only load images if UID is available
-				dispatch(actionCreators.loadUserImages(showArchivedImages));
-			} else {
-				dispatch(actionCreators.loadImages());
-			}
-		} catch (error) {
-			console.error(error);
-		}
+		const result = uid
+			? dispatch(actionCreators.loadUserImages(showArchivedImages))
+			: dispatch(actionCreators.loadImages());
+
+		Promise.resolve(result).catch(error => console.error('Failed to load gallery images:', error));
 	}, [dispatch, showArchivedImages, uid]);
 
 	React.useEffect(() => {
@@ -54,12 +48,8 @@ const ShowGalleryInternal: React.FC<ComponentProps> = ({ uid }) => {
 
 	const handleArchiveImage = async (data: ImageInterface, archived: boolean) => {
 		try {
-			await dispatch(actionCreators.archiveImage(data, archived));
-			if (uid) {
-				dispatch(actionCreators.loadUserImages(showArchivedImages));
-			} else {
-				dispatch(actionCreators.loadImages());
-			}
+			const shouldRemoveFromList = Boolean(uid) && !showArchivedImages && archived === false;
+			await dispatch(actionCreators.archiveImage(data, archived, shouldRemoveFromList));
 		} catch (error) {
 			console.error(error);
 		}
@@ -68,11 +58,6 @@ const ShowGalleryInternal: React.FC<ComponentProps> = ({ uid }) => {
 	const handlePrivateImage = async (data: ImageInterface, isPrivate: boolean) => {
 		try {
 			await dispatch(actionCreators.togglePrivateImage(data, isPrivate));
-			if (uid) {
-				dispatch(actionCreators.loadUserImages(showArchivedImages));
-			} else {
-				dispatch(actionCreators.loadImages());
-			}
 		} catch (error) {
 			console.error(error);
 		}
@@ -97,8 +82,9 @@ const ShowGalleryInternal: React.FC<ComponentProps> = ({ uid }) => {
 					<p>No images available</p>  // Placeholder to show when no images are loaded
 				) : (
 					imagesData.map((imageItem: ImageInterface, index: number) => {
+						const key = imageItem.imgId ?? imageItem.imgSrc ?? String(index);
 						return (
-							<div className="photoWrap" key={index}>
+							<div className="photoWrap" key={key}>
 								<OverlayLayer>
 									{uid && (
 										<>
@@ -116,7 +102,7 @@ const ShowGalleryInternal: React.FC<ComponentProps> = ({ uid }) => {
 									)}
 									<div className="photoActionLayer" onClick={() => openModal(imageItem)}></div>
 								</OverlayLayer>
-								<img src={imageItem.imgSrc} alt={imageItem.imgName} />
+								<img src={imageItem.imgSrc} alt={imageItem.imgName} loading="lazy" />
 							</div>
 						);
 					})

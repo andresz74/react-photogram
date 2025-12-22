@@ -13,6 +13,14 @@ const imagesReducer = (state: ImageInterface[] = initialState, action: Action) =
         case ActionType.LOAD_IMAGES_ERROR:
             return state;  // Preserve last good state on error
         case ActionType.ARCHIVE_IMAGE:
+            if (!action.imgId || typeof action.imgArchived !== 'boolean') return state;
+            if (action.removeFromList) {
+                return state.filter(img => img.imgId !== action.imgId);
+            }
+            return state.map(img => (img.imgId === action.imgId ? { ...img, imgArchived: action.imgArchived } : img));
+        case ActionType.TOGGLE_PRIVATE_IMAGE:
+            if (!action.imgId || typeof action.imgPrivate !== 'boolean') return state;
+            return state.map(img => (img.imgId === action.imgId ? { ...img, imgPrivate: action.imgPrivate } : img));
         default:
             return state;
     }

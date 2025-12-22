@@ -18,10 +18,15 @@ interface LoadImagesErrorAction {
 
 interface ArchiveImages {
 	type: ActionType.ARCHIVE_IMAGE;
+	imgId?: string;
+	imgArchived?: boolean;
+	removeFromList?: boolean;
 }
 
 interface TogglePrivateImage {
 	type: ActionType.TOGGLE_PRIVATE_IMAGE;
+	imgId?: string;
+	imgPrivate?: boolean;
 }
 
 interface SetUserUIDAction {
