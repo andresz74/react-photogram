@@ -1,10 +1,20 @@
 import firebase from 'firebase/app';
-import { db, imagesDbCollection } from 'firebase.configuration';
+import { auth, db, imagesDbCollection } from 'firebase.configuration';
 import { ImageInterface } from 'type';
 import config from '../config';
 
 // Firestore reference
 const imagesRef = db.collection(imagesDbCollection);
+
+const getAuthToken = async (): Promise<string> => {
+	const user = auth.currentUser;
+
+	if (!user) {
+		throw new Error('User must be authenticated to perform this action.');
+	}
+
+	return user.getIdToken();
+};
 
 const mapSnapshotToImages = (snapshot: firebase.firestore.QuerySnapshot): ImageInterface[] =>
 	snapshot.docs.map(doc => ({
@@ -21,18 +31,25 @@ const mapSnapshotToImages = (snapshot: firebase.firestore.QuerySnapshot): ImageI
 
 // Get only public, non-archived images ordered by upload date (newest first)
 export const getPublicImages = async (): Promise<ImageInterface[]> => {
-	const snapshot = await imagesRef.where('imgArchived', '==', false).get();
-	return mapSnapshotToImages(snapshot)
-		.filter(img => img.imgPrivate === false)
-		.sort((a, b) => b.imgUploadDate - a.imgUploadDate);
+	const snapshot = await imagesRef
+		.where('imgArchived', '==', false)
+		.where('imgPrivate', '==', false)
+		.orderBy('imgUploadDate', 'desc')
+		.get();
+
+	return mapSnapshotToImages(snapshot);
 };
 
 // Get images for a specific user; optionally include archived ones
 export const getUserImages = async (uid: string, includeArchived?: boolean): Promise<ImageInterface[]> => {
-	const snapshot = await imagesRef.where('imgUserOwner', '==', uid).get();
-	return mapSnapshotToImages(snapshot)
-		.filter(img => includeArchived ? true : img.imgArchived === false)
-		.sort((a, b) => b.imgUploadDate - a.imgUploadDate);
+	let query: firebase.firestore.Query = imagesRef.where('imgUserOwner', '==', uid);
+
+	if (!includeArchived) {
+		query = query.where('imgArchived', '==', false);
+	}
+
+	const snapshot = await query.orderBy('imgUploadDate', 'desc').get();
+	return mapSnapshotToImages(snapshot);
 };
 
 // Function to set image privacy (private/public)
@@ -51,16 +68,20 @@ export const archiveImage = async (image: ImageInterface, imgArchived: boolean) 
 export const uploadImage = async (image: File): Promise<string | null> => {
 	const formData = new FormData();
 	formData.append('image', image);
+	const authToken = await getAuthToken();
 
 	try {
 		// Make a POST request to the backend for image upload
 		const response = await fetch(`${config.apiBaseUrl}/resize-upload`, {
 			method: 'POST',
+			headers: {
+				Authorization: `Bearer ${authToken}`,
+			},
 			body: formData,
 		});
 
 		const result = await response.json();
-        console.log('Upload response:', result);
+		console.log('Upload response:', result);
 
 		if (response.ok) {
 			return result.url; // Return the uploaded image URL
@@ -78,6 +99,8 @@ export const uploadImage = async (image: File): Promise<string | null> => {
 export const deleteImage = async (image: ImageInterface) => {
 	// Delete image document from Firestore
 	const imageDocRef = db.collection(imagesDbCollection).doc(image.imgId);
+	const authToken = await getAuthToken();
+
 	try {
 		await imageDocRef.delete();
 		console.log(`Firestore document deleted: ${image.imgId}`);
@@ -87,6 +110,7 @@ export const deleteImage = async (image: ImageInterface) => {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
+				Authorization: `Bearer ${authToken}`,
 			},
 			body: JSON.stringify({ imgName: image.imgName }),
 		});

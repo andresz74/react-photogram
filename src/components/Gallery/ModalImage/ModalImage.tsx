@@ -12,85 +12,59 @@ export interface ComponentProps {
 }
 
 export const ModalImage: React.FC<ComponentProps> = ({ imgDescription, imgLikes, imgName, imgSrc, isOpen, onClose }) => {
-	const [imgStyle, setImgStyle] = React.useState<React.CSSProperties>({});
-
-	const elementRef = React.useRef<HTMLDivElement>(null);
-	// const [dimensions, setDimensions] = React.useState({ width: 0, height: 0 });
+	const [isLoaded, setIsLoaded] = React.useState(false);
+	const [hasError, setHasError] = React.useState(false);
+	const [isZoomed, setIsZoomed] = React.useState(false);
 
 	React.useEffect(() => {
-		const img = new Image();
-		img.src = imgSrc;
-	
-		const calculateImageDimensions = () => {
-			// Image's natural dimensions
-			const { naturalWidth, naturalHeight } = img;
-	
-			// Calculate the aspect ratio of the image
-			const imageAspectRatio = naturalWidth / naturalHeight;
-	
-			// Viewport constraints
-			const maxWidth = window.innerWidth * 0.8; // 80vw
-			const maxHeight = window.innerHeight * 0.8; // 80vh
-	
-			// Final dimensions based on constraints
-			let finalWidth, finalHeight;
-	
-			if (imageAspectRatio > 1) {
-				// Landscape image: Width constrained by maxWidth
-				finalWidth = Math.min(maxWidth, naturalWidth);
-				finalHeight = finalWidth / imageAspectRatio;
-	
-				// If height exceeds maxHeight, adjust dimensions
-				if (finalHeight > maxHeight) {
-					finalHeight = maxHeight;
-					finalWidth = finalHeight * imageAspectRatio;
-				}
-			} else {
-				// Portrait image: Height constrained by maxHeight
-				finalHeight = Math.min(maxHeight, naturalHeight);
-				finalWidth = finalHeight * imageAspectRatio;
-	
-				// If width exceeds maxWidth, adjust dimensions
-				if (finalWidth > maxWidth) {
-					finalWidth = maxWidth;
-					finalHeight = finalWidth / imageAspectRatio;
-				}
-			}
-	
-			// Apply consistent styles
-			setImgStyle({
-				width: `${finalWidth}px`,
-				height: `${finalHeight}px`,
-			});
-		};
-	
-		// Wait for the image to load and then calculate dimensions
-		img.onload = calculateImageDimensions;
-	
-		// Recalculate on window resize
-		window.addEventListener('resize', calculateImageDimensions);
-	
-		// Cleanup event listener on unmount
-		return () => {
-			window.removeEventListener('resize', calculateImageDimensions);
-		};
-	}, [imgSrc]); // Recalculate only when the image source changes
-	
-	
-
+		if (!isOpen) return;
+		setIsLoaded(false);
+		setHasError(false);
+		setIsZoomed(false);
+	}, [imgSrc, isOpen]);
 
 	// const imgTitle = <div className="modalTitle">{imgName && <span>{imgName}</span>}</div>
 	const handleOnLike = React.useCallback((event: React.MouseEvent): void => {
 		console.log('I like it');
 	}, []);
+
+	const handleToggleZoom = React.useCallback(() => {
+		if (!isLoaded || hasError) return;
+		setIsZoomed(previous => !previous);
+	}, [hasError, isLoaded]);
+
 	return (
-		<CoreModal isOpen={isOpen} onRequestClose={onClose}>
+		<CoreModal
+			isOpen={isOpen}
+			onRequestClose={onClose}
+			className="modalImageCore"
+			bodyOpenClassName="modalImageOpen"
+			htmlOpenClassName="modalImageOpen"
+		>
 			<div className={`photoModalWrap`}>
-				<div className='imageBox' ref={elementRef}>
-					<img src={imgSrc} alt={imgName} style={imgStyle} />
+				<div className={`imageBox ${isZoomed ? 'imageBoxZoomed' : ''}`}>
+					{!isLoaded && !hasError && <div className="imageStatus">Loading…</div>}
+					{hasError && (
+						<div className="imageStatus">
+							<div>Couldn’t load image.</div>
+							<a className="imageFallbackLink" href={imgSrc} target="_blank" rel="noreferrer">
+								Open original
+							</a>
+						</div>
+					)}
+					<img
+						src={imgSrc}
+						alt={imgName}
+						className={`modalImage ${isLoaded ? 'modalImageLoaded' : ''} ${isZoomed ? 'modalImageZoomed' : ''}`}
+						decoding="async"
+						draggable={false}
+						onLoad={() => setIsLoaded(true)}
+						onError={() => setHasError(true)}
+						onClick={handleToggleZoom}
+					/>
 				</div>
 				<div className='infoBox'>
-					{imgDescription && <div className='imgDescription'>{imgDescription}</div>}
+					<div className='imgDescription'>{imgDescription || null}</div>
 					<div className='socialWrap'>
 						<span className={`socialIco multiLike`}>
 							<span className='multiLikeIcon'>
