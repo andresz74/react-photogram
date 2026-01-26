@@ -9,17 +9,21 @@ export interface ComponentProps {
 }
 
 export const HideImage: React.FC<ComponentProps> = ({ imgPrivate, imgData, handleHideImage }) => {
+	const label = imgPrivate ? 'Make image public' : 'Make image private';
+
 	return (
-		<div
+		<button
+			type="button"
 			className="hideIconWrapper"
-			onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => handleHideImage(imgData, imgPrivate)}
+			aria-label={label}
+			onClick={() => handleHideImage(imgData, imgPrivate)}
 		>
 			{!imgPrivate ? (
-				<i className="icofont-eye-blocked" title="Hide Image"></i>
+				<i className="icofont-eye-blocked" title={label} aria-hidden="true"></i>
 			) : (
-				<i className="icofont-eye" title="Show Image"></i>
+				<i className="icofont-eye" title={label} aria-hidden="true"></i>
 			)}
-		</div>
+		</button>
 	);
 };
 

@@ -9,17 +9,21 @@ export interface ComponentProps {
 }
 
 export const ArchiveImage: React.FC<ComponentProps> = ({ imgArchived, imgData, handleArchiveImage }) => {
+	const label = imgArchived ? 'Unarchive image' : 'Archive image';
+
 	return (
-		<div
+		<button
+			type="button"
 			className="archiveIconWrapper"
-			onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => handleArchiveImage(imgData, imgArchived)}
+			aria-label={label}
+			onClick={() => handleArchiveImage(imgData, imgArchived)}
 		>
 			{!imgArchived ? (
-				<i className="icofont-inbox" title="Archive Image"></i>
+				<i className="icofont-inbox" title={label} aria-hidden="true"></i>
 			) : (
-				<i className="icofont-upload-alt" title="Archive Image"></i>
+				<i className="icofont-upload-alt" title={label} aria-hidden="true"></i>
 			)}
-		</div>
+		</button>
 	);
 };
 

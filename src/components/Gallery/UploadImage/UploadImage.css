@@ -7,7 +7,7 @@
 	display: flex;
 	flex-direction: column;
 	min-height: 300px;
-	width: 300px;
+	width: min(520px, 92vw);
 }
 
 .uploadToolHeader {
@@ -39,6 +39,25 @@
 	display: flex;
 	flex-direction: column;
 	padding: 40px 30px;
+	gap: 16px;
+}
+
+.uploadNotice {
+	padding: 12px;
+	border: 1px solid var(--soft-transparent-25);
+	border-radius: 8px;
+	background: var(--color-surface-alt);
+	text-align: left;
+}
+
+.uploadNoticeText {
+	margin: 0 0 8px;
+	color: var(--color-text-strong);
+}
+
+.uploadNoticeLink {
+	color: var(--strong-blue);
+	text-decoration: underline;
 }
 
 .progressBarWrap {
@@ -48,7 +67,7 @@
 .progressBar {
 	-webkit-appearance: none;
 	height: 0.5em;
-	margin-bottom: 2em;
+	margin-bottom: 0.75em;
 	width: 100%;
 }
 
@@ -72,14 +91,40 @@
 
 .inputFile {
 	opacity: 0;
-    position: absolute;
-    z-index: -1;
+	    position: absolute;
+	    z-index: -1;
+}
+
+.dropZone {
+	border: 1px dashed var(--low-blue);
+	border-radius: 10px;
+	padding: 14px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	background: var(--color-surface);
+}
+
+.dropZoneHint {
+	font-size: 0.875rem;
+	color: var(--color-text-muted);
+}
+
+.fileMeta {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.fileDetails {
+	font-size: 0.8125rem;
+	color: var(--color-text-muted);
 }
 
 /* Style the label to act as the button */
 .customFileInputLabel {
-    display: inline-block;
-    padding: 10px 20px;
+	    display: inline-block;
+	    padding: 10px 20px;
     color: var(--color-white);
     background-color: var(--blue);
     border: none;
@@ -105,15 +150,36 @@
 } */
 
 .fileName {
-    color: var(--blue);
-    font-size: 0.875rem;
-    margin-top: 8px;
-    text-align: left;
+	    color: var(--blue);
+	    font-size: 0.875rem;
+	    margin-top: 8px;
+	    text-align: left;
+		word-break: break-word;
+}
+
+.previewWrap {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
 }
 
 .descriptionWrap {
 	display: flex;
-	margin-bottom: 2rem;
+	flex-direction: column;
+	gap: 6px;
+	margin-bottom: 0.5rem;
+	text-align: left;
+}
+
+.fieldLabel {
+	font-size: 0.875rem;
+	color: var(--color-text-strong);
+}
+
+.fieldHelp {
+	font-size: 0.8125rem;
+	color: var(--color-text-muted);
+	text-align: right;
 }
 
 .textareaDescription {
@@ -127,17 +193,59 @@
 	overflow: auto;
 	padding: 8px;
 	resize: none;
+	border-radius: 8px;
 }
 
 .buttonWrap {
 	margin-bottom: 2em;
+	display: flex;
+	gap: 10px;
+	justify-content: flex-start;
 }
 
-.fileUrl {
-	display: block;
-	font-size: 0.75em;
-	margin-bottom: 2em;
-	word-break: break-all;
+.uploadToolWrap .buttonMain {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.uploadToolWrap .buttonMain:disabled {
+	background-color: var(--strong-blue-transparent-25);
+	color: var(--color-text-muted);
+	cursor: not-allowed;
+}
+
+.uploadSection[aria-busy='true'] .buttonMain {
+	cursor: progress;
+}
+
+.uploadSection[aria-busy='true'] .buttonMain::after {
+	content: '';
+	width: 14px;
+	height: 14px;
+	border-radius: 999px;
+	border: 2px solid rgba(255, 255, 255, 0.45);
+	border-top-color: rgba(255, 255, 255, 0.95);
+	animation: uploadSpin 700ms linear infinite;
+}
+
+.uploadToolWrap .buttonSecondary:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.buttonSecondary {
+	background-color: transparent;
+	border: 1px solid var(--low-blue);
+	border-radius: 0.25em;
+	color: var(--strong-blue);
+	padding: 0.75em 1.0em;
+	text-transform: uppercase;
+}
+
+.buttonSecondary:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
 }
 
 .filePreview {
@@ -145,4 +253,73 @@
 	box-shadow: var(--shadow-soft);
 	height: auto;
 	width: 100%;
+	max-height: 320px;
+	object-fit: cover;
+}
+
+.toggleRow {
+	display: flex;
+	justify-content: flex-start;
+}
+
+.toggleLabel {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	font-size: 0.875rem;
+	color: var(--color-text-strong);
+}
+
+.uploadError {
+	border: 1px solid rgba(255, 0, 0, 0.35);
+	background: rgba(255, 0, 0, 0.06);
+	color: var(--color-text-strong);
+	padding: 10px 12px;
+	border-radius: 8px;
+	text-align: left;
+}
+
+.uploadStageRow {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	font-size: 0.875rem;
+	color: var(--color-text-muted);
+	margin-top: 4px;
+}
+
+.uploadStage {
+	color: var(--color-text-strong);
+}
+
+.uploadPercent {
+	font-variant-numeric: tabular-nums;
+}
+
+.uploadedMeta {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	text-align: left;
+}
+
+.uploadSuccess {
+	font-weight: 600;
+	color: var(--strong-blue);
+}
+
+.uploadedLink {
+	color: var(--strong-blue);
+	text-decoration: underline;
+	word-break: break-all;
+}
+
+@keyframes uploadSpin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
 }
