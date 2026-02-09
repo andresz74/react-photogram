@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { getUserData } from 'api';
 import { RootState } from 'state/reducers';
 import { auth } from 'firebase.configuration';
@@ -15,11 +15,14 @@ export const Login: React.FC = () => {
 	const emailRef = React.useRef<HTMLInputElement>(null);
 	const passwordRef = React.useRef<HTMLInputElement>(null);
 	const navigate = useNavigate();
+	const location = useLocation();
 	const dispatch = useDispatch<AppDispatch>();
+	const searchParams = new URLSearchParams(location.search);
+	const nextPath = searchParams.get('next') || '/';
 
 	React.useEffect(() => {
-		if (uid) navigate('/');
-	}, [uid, navigate]);
+		if (uid) navigate(nextPath);
+	}, [uid, navigate, nextPath]);
 
 	// Function to handle login and dispatch user UID
 	const logIn = async () => {
@@ -43,7 +46,7 @@ export const Login: React.FC = () => {
 				}
 			}
 			dispatch(actionCreators.setAsyncStatus('auth', 'succeeded'));
-			navigate('/');
+			navigate(nextPath);
 		} catch (error) {
 			const message = error instanceof Error ? error.message : String(error);
 			logger.error('Login failed:', error);

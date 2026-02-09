@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { RootState } from 'state/reducers';
 import { AppInitializer } from './AppInitializer'
+import { ProtectedRoute } from './ProtectedRoute';
 import { Footer, Header, Login, ShowGallery, UploadImage } from 'components';
 import './App.css';
 
@@ -26,8 +27,22 @@ export const App: React.FC = () => {
 					<main className="App-main">
 						<Routes>
 							<Route path="/" element={<ShowGallery />} />
-							<Route path="/upload" element={<UploadImage />} />
-							<Route path="/mygallery" element={<ShowGallery uid={uid} />} />
+							<Route
+								path="/upload"
+								element={
+									<ProtectedRoute isAuthenticated={Boolean(uid)}>
+										<UploadImage />
+									</ProtectedRoute>
+								}
+							/>
+							<Route
+								path="/mygallery"
+								element={
+									<ProtectedRoute isAuthenticated={Boolean(uid)}>
+										<ShowGallery uid={uid} />
+									</ProtectedRoute>
+								}
+							/>
 							<Route path="/login" element={<Login />} />
 						</Routes>
 					</main>

@@ -115,8 +115,17 @@ test('renders login route and login form fields', async () => {
 test('renders upload route guard notice for signed-out users', async () => {
 	renderAppAt('/upload');
 
-	expect(await screen.findByText('You must be logged in to upload images.')).toBeInTheDocument();
-	expect(screen.getByRole('link', { name: 'Go to Login' })).toBeInTheDocument();
+	expect(await screen.findByPlaceholderText('Email')).toBeInTheDocument();
+	expect(window.location.pathname).toBe('/login');
+	expect(window.location.search).toContain('next=%2Fupload');
+});
+
+test('redirects signed-out users from my gallery to login with next path', async () => {
+	renderAppAt('/mygallery');
+
+	expect(await screen.findByPlaceholderText('Email')).toBeInTheDocument();
+	expect(window.location.pathname).toBe('/login');
+	expect(window.location.search).toContain('next=%2Fmygallery');
 });
 
 test('shows authenticated menu items when auth user exists', async () => {
