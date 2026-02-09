@@ -2,10 +2,11 @@ import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { auth, initializeAuthPersistence } from 'firebase.configuration'; // Firebase auth instance
 import { actionCreators } from 'state'; // Redux actions for setting UID
+import type { AppDispatch } from 'state';
 import { logger } from 'utils/logger';
 
 export const AppInitializer: React.FC = ({ children }) => {
-    const dispatch = useDispatch<any>();
+    const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
         Promise.resolve(initializeAuthPersistence()).catch((error) => {

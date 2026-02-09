@@ -9,4 +9,4 @@ export const store = createStore(reducers, {}, composeWithDevTools(applyMiddlewa
 
 // Types
 export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = ThunkDispatch<RootState, any, AnyAction>;
+export type AppDispatch = ThunkDispatch<RootState, unknown, AnyAction>;

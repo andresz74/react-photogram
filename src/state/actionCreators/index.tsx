@@ -4,6 +4,7 @@ import { Action, AsyncFeature, AsyncStatus, SetAsyncStatusAction } from '../acti
 import * as Api from 'api';
 import { ImageInterface } from 'type';
 import { logger } from 'utils/logger';
+import { RootState } from '../reducers';
 
 export const setAsyncStatus = (
 	feature: AsyncFeature,
@@ -37,7 +38,7 @@ export const loadImages = () => {
 };
 
 export const loadUserImages = (showArchived?: boolean) => {
-	return async (dispatch: Dispatch<Action>, getState: () => any) => {
+	return async (dispatch: Dispatch<Action>, getState: () => RootState) => {
 		dispatch(setAsyncStatus('userGallery', 'loading'));
 		const { uid } = getState().auth;
 		if (!uid) {

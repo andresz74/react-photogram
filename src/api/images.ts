@@ -7,6 +7,9 @@ import { logger } from 'utils/logger';
 // Firestore reference
 const imagesRef = db.collection(imagesDbCollection);
 
+type UploadApiResponse = { url?: string };
+type FirestoreTimestampLike = { toMillis: () => number };
+
 const getAuthToken = async (): Promise<string> => {
 	const user = auth.currentUser;
 
@@ -21,11 +24,12 @@ const mapSnapshotToImages = (snapshot: firebase.firestore.QuerySnapshot): ImageI
 	snapshot.docs.map(doc => {
 		const data = doc.data();
 		const uploadDateRaw = data.imgUploadDate as unknown;
+		const asTimestampLike = uploadDateRaw as FirestoreTimestampLike;
 		const imgUploadDate =
 			typeof uploadDateRaw === 'number'
 				? uploadDateRaw
-				: uploadDateRaw && typeof (uploadDateRaw as any).toMillis === 'function'
-					? (uploadDateRaw as any).toMillis()
+				: uploadDateRaw && typeof asTimestampLike.toMillis === 'function'
+					? asTimestampLike.toMillis()
 					: 0;
 
 		return {
@@ -93,7 +97,7 @@ export const uploadImage = async (
 	try {
 		options?.onStage?.('uploading');
 
-		const result = await new Promise<any>((resolve, reject) => {
+		const result = await new Promise<UploadApiResponse>((resolve, reject) => {
 			const xhr = new XMLHttpRequest();
 			xhr.open('POST', `${config.apiBaseUrl}/resize-upload`);
 			xhr.setRequestHeader('Authorization', `Bearer ${authToken}`);
@@ -121,7 +125,12 @@ export const uploadImage = async (
 				}
 
 				try {
-					resolve(JSON.parse(xhr.responseText));
+					const parsed = JSON.parse(xhr.responseText) as unknown;
+					if (parsed && typeof parsed === 'object') {
+						resolve(parsed as UploadApiResponse);
+						return;
+					}
+					reject(new Error('Invalid upload response payload.'));
 				} catch {
 					reject(new Error('Invalid JSON response from upload endpoint.'));
 				}
@@ -133,7 +142,7 @@ export const uploadImage = async (
 		logger.debug('Upload response:', result);
 		return result?.url ?? null;
 	} catch (error) {
-		console.error('Error uploading image:', error);
+		logger.error('Error uploading image:', error);
 		return null;
 	}
 };
