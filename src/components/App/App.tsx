@@ -8,7 +8,13 @@ import { Footer, Header, Login, ShowGallery, UploadImage } from 'components';
 import './App.css';
 
 export const App: React.FC = () => {
-	Modal.setAppElement('#root');
+	React.useEffect(() => {
+		const rootElement = document.getElementById('root');
+		if (rootElement) {
+			Modal.setAppElement(rootElement);
+		}
+	}, []);
+
 	const basename = process.env.PUBLIC_URL || '/';
 	const uid = useSelector((state: RootState) => state.auth.uid); // Get the UID from Redux
 

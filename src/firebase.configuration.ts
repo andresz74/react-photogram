@@ -25,9 +25,26 @@ const app = !firebase.apps.length
 
 // Firebase authentication setup
 export const auth = firebase.auth();
-auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-    .then(() => logger.debug('Firebase persistence set to LOCAL'))
-    .catch((error) => logger.error('Error setting Firebase persistence:', error));
+
+let authPersistenceInitialized = false;
+
+export const initializeAuthPersistence = async () => {
+    if (authPersistenceInitialized) return;
+    authPersistenceInitialized = true;
+
+    // Avoid browser-persistence setup in test/non-browser runtimes.
+    if (process.env.NODE_ENV === 'test' || typeof window === 'undefined') {
+        logger.debug('Skipping Firebase auth persistence setup for test/non-browser runtime');
+        return;
+    }
+
+    try {
+        await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+        logger.debug('Firebase persistence set to LOCAL');
+    } catch (error) {
+        logger.error('Error setting Firebase persistence:', error);
+    }
+};
 
 // Initialize Firestore
 export const db = firebase.firestore(app);

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { auth } from 'firebase.configuration'; // Firebase auth instance
+import { auth, initializeAuthPersistence } from 'firebase.configuration'; // Firebase auth instance
 import { actionCreators } from 'state'; // Redux actions for setting UID
 import { logger } from 'utils/logger';
 
@@ -8,6 +8,10 @@ export const AppInitializer: React.FC = ({ children }) => {
     const dispatch = useDispatch<any>();
 
     useEffect(() => {
+        Promise.resolve(initializeAuthPersistence()).catch((error) => {
+            logger.error('Failed to initialize Firebase auth persistence:', error);
+        });
+
         // Listen for Firebase auth state changes
         const unsubscribe = auth.onAuthStateChanged((user) => {
             if (user) {
