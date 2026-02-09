@@ -2,7 +2,8 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from 'state/store';
 import { useLocation } from 'react-router-dom';
-import { ArchiveImage, HideImage, ModalImage, OverlayLayer } from 'components';
+import { deleteImage } from 'api';
+import { ArchiveImage, DeleteImage, HideImage, ModalImage, OverlayLayer } from 'components';
 import { actionCreators } from 'state';
 import { RootState } from 'state/reducers';
 import { ImageInterface } from 'type';
@@ -17,6 +18,8 @@ const ShowGalleryInternal: React.FC<ComponentProps> = ({ uid }) => {
 	const [modalImage, setModalImage] = React.useState<ImageInterface | null>(null);
 	// To hide archived images
 	const [showArchivedImages, setShowArchivedImages] = React.useState<boolean>(false);
+	const [isDeletingId, setIsDeletingId] = React.useState<string | null>(null);
+	const [deleteStatus, setDeleteStatus] = React.useState<{ kind: 'success' | 'error'; message: string } | null>(null);
 	const location = useLocation();
 
 	const openModal = (imageItem: ImageInterface) => {
@@ -63,6 +66,31 @@ const ShowGalleryInternal: React.FC<ComponentProps> = ({ uid }) => {
 		}
 	};
 
+	const refreshGallery = async () => {
+		if (uid) {
+			await dispatch(actionCreators.loadUserImages(showArchivedImages));
+			return;
+		}
+		await dispatch(actionCreators.loadImages());
+	};
+
+	const handleDeleteImage = async (data: ImageInterface) => {
+		const imageId = data.imgId ?? data.imgName;
+		setIsDeletingId(imageId);
+		setDeleteStatus(null);
+
+		try {
+			await deleteImage(data);
+			await refreshGallery();
+			setDeleteStatus({ kind: 'success', message: 'Image deleted successfully.' });
+		} catch (error) {
+			const message = error instanceof Error ? error.message : 'Unable to delete image.';
+			setDeleteStatus({ kind: 'error', message });
+		} finally {
+			setIsDeletingId(null);
+		}
+	};
+
 	return (
 		<div className="albumWrap">
 			<div className="albumHeader">
@@ -77,6 +105,11 @@ const ShowGalleryInternal: React.FC<ComponentProps> = ({ uid }) => {
 					)}
 				</div>
 			</div>
+			{deleteStatus && (
+				<div className={`galleryNotice galleryNotice${deleteStatus.kind === 'success' ? 'Success' : 'Error'}`} role="status">
+					{deleteStatus.message}
+				</div>
+			)}
 			<div className="albumRow">
 				{imagesData.length === 0 ? (
 					<p>No images available</p>  // Placeholder to show when no images are loaded
@@ -97,6 +130,11 @@ const ShowGalleryInternal: React.FC<ComponentProps> = ({ uid }) => {
 												imgData={imageItem}
 												handleHideImage={handlePrivateImage}
 												imgPrivate={imageItem.imgPrivate}
+											/>
+											<DeleteImage
+												imgData={imageItem}
+												isDeleting={isDeletingId === key}
+												onDelete={handleDeleteImage}
 											/>
 										</>
 									)}

@@ -140,30 +140,40 @@ export const uploadImage = async (
 
 // Function to delete an image both from Firestore and Firebase Storage via backend
 export const deleteImage = async (image: ImageInterface) => {
-	// Delete image document from Firestore
-	const imageDocRef = db.collection(imagesDbCollection).doc(image.imgId);
+	if (!image.imgName) {
+		throw new Error('Missing image name. Cannot delete storage object.');
+	}
+
 	const authToken = await getAuthToken();
 
+	// 1) Delete storage object via backend first to avoid storage orphans.
+	const storageResponse = await fetch(`${config.apiBaseUrl}/delete-image`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${authToken}`,
+		},
+		body: JSON.stringify({ imgName: image.imgName }),
+	});
+
+	if (!storageResponse.ok) {
+		const reason = await storageResponse.text();
+		throw new Error(reason || `Storage delete failed (HTTP ${storageResponse.status}).`);
+	}
+
+	logger.debug('Image deleted from Firebase Storage:', image.imgName);
+
+	if (!image.imgId) {
+		throw new Error('Storage deleted but Firestore document id is missing. Manual cleanup required.');
+	}
+
+	// 2) Delete Firestore metadata after storage delete succeeds.
+	const imageDocRef = db.collection(imagesDbCollection).doc(image.imgId);
 	try {
 		await imageDocRef.delete();
 		logger.debug('Firestore document deleted:', image.imgId);
-
-		// Call the backend API to delete the image from Firebase Storage
-		const response = await fetch(`${config.apiBaseUrl}/delete-image`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${authToken}`,
-			},
-			body: JSON.stringify({ imgName: image.imgName }),
-		});
-
-		if (response.ok) {
-			logger.debug('Image deleted from Firebase Storage:', image.imgName);
-		} else {
-			console.error('Error deleting image from Firebase Storage:', await response.text());
-		}
 	} catch (error) {
-		console.error('Error deleting image:', error);
+		const message = error instanceof Error ? error.message : String(error);
+		throw new Error(`Storage deleted but Firestore delete failed: ${message}`);
 	}
 };

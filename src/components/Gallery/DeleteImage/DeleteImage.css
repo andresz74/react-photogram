@@ -1,4 +1,6 @@
 .deleteIconWrapper {
+	background: transparent;
+	border: 0;
 	color: var(--color-surface);
 	font-size: 1.5em;
 	position: absolute;
@@ -9,4 +11,9 @@
 
 .deleteIconWrapper i {
 	display: inline-block;
+}
+
+.deleteIconWrapper:disabled {
+	cursor: not-allowed;
+	opacity: 0.6;
 }

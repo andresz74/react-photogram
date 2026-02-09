@@ -26,6 +26,22 @@
 	margin-bottom: 28px;
 }
 
+.galleryNotice {
+	border-radius: 6px;
+	margin: 0 0 14px;
+	padding: 10px 12px;
+}
+
+.galleryNoticeSuccess {
+	background-color: #ecfdf3;
+	color: #065f46;
+}
+
+.galleryNoticeError {
+	background-color: #fef2f2;
+	color: #991b1b;
+}
+
 .photoWrap {
 	display: flex;
 	position: relative;
