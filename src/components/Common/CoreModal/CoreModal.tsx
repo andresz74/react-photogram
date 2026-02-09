@@ -38,10 +38,16 @@ export const CoreModal: React.FC<ComponentProps & { children?: React.ReactNode }
 			className={`modalCore ${className ?? ''}`}
 			overlayClassName={`modalOverlay ${overlayClassName ?? ''}`}
 			isOpen={isOpen}
-			ariaHideApp={false}
 			{...reactModalProps}
 		>
-			<i className="icofont-close-line modalCloseIco" onClick={handleOnClose}></i>
+			<button
+				type="button"
+				className="modalCloseBtn"
+				aria-label="Close modal"
+				onClick={handleOnClose}
+			>
+				<i className="icofont-close-line modalCloseIco" aria-hidden="true"></i>
+			</button>
 			{headerChildren && <div className="modalHeader">
 				{headerChildren}
 			</div>}

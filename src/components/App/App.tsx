@@ -1,5 +1,4 @@
 import React from 'react';
-import Modal from 'react-modal';
 import { useSelector } from 'react-redux';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { RootState } from 'state/reducers';
@@ -9,13 +8,6 @@ import { Footer, Header, Login, ShowGallery, UploadImage } from 'components';
 import './App.css';
 
 export const App: React.FC = () => {
-	React.useEffect(() => {
-		const rootElement = document.getElementById('root');
-		if (rootElement) {
-			Modal.setAppElement(rootElement);
-		}
-	}, []);
-
 	const basename = process.env.PUBLIC_URL || '/';
 	const uid = useSelector((state: RootState) => state.auth.uid); // Get the UID from Redux
 
