@@ -7,6 +7,9 @@ import { logger } from 'utils/logger';
 // Firestore reference
 const imagesRef = db.collection(imagesDbCollection);
 
+type UploadApiResponse = { url?: string };
+type FirestoreTimestampLike = { toMillis: () => number };
+
 const getAuthToken = async (): Promise<string> => {
 	const user = auth.currentUser;
 
@@ -21,11 +24,12 @@ const mapSnapshotToImages = (snapshot: firebase.firestore.QuerySnapshot): ImageI
 	snapshot.docs.map(doc => {
 		const data = doc.data();
 		const uploadDateRaw = data.imgUploadDate as unknown;
+		const asTimestampLike = uploadDateRaw as FirestoreTimestampLike;
 		const imgUploadDate =
 			typeof uploadDateRaw === 'number'
 				? uploadDateRaw
-				: uploadDateRaw && typeof (uploadDateRaw as any).toMillis === 'function'
-					? (uploadDateRaw as any).toMillis()
+				: uploadDateRaw && typeof asTimestampLike.toMillis === 'function'
+					? asTimestampLike.toMillis()
 					: 0;
 
 		return {
@@ -93,7 +97,7 @@ export const uploadImage = async (
 	try {
 		options?.onStage?.('uploading');
 
-		const result = await new Promise<any>((resolve, reject) => {
+		const result = await new Promise<UploadApiResponse>((resolve, reject) => {
 			const xhr = new XMLHttpRequest();
 			xhr.open('POST', `${config.apiBaseUrl}/resize-upload`);
 			xhr.setRequestHeader('Authorization', `Bearer ${authToken}`);
@@ -121,7 +125,12 @@ export const uploadImage = async (
 				}
 
 				try {
-					resolve(JSON.parse(xhr.responseText));
+					const parsed = JSON.parse(xhr.responseText) as unknown;
+					if (parsed && typeof parsed === 'object') {
+						resolve(parsed as UploadApiResponse);
+						return;
+					}
+					reject(new Error('Invalid upload response payload.'));
 				} catch {
 					reject(new Error('Invalid JSON response from upload endpoint.'));
 				}
@@ -133,37 +142,47 @@ export const uploadImage = async (
 		logger.debug('Upload response:', result);
 		return result?.url ?? null;
 	} catch (error) {
-		console.error('Error uploading image:', error);
+		logger.error('Error uploading image:', error);
 		return null;
 	}
 };
 
 // Function to delete an image both from Firestore and Firebase Storage via backend
 export const deleteImage = async (image: ImageInterface) => {
-	// Delete image document from Firestore
-	const imageDocRef = db.collection(imagesDbCollection).doc(image.imgId);
+	if (!image.imgName) {
+		throw new Error('Missing image name. Cannot delete storage object.');
+	}
+
 	const authToken = await getAuthToken();
 
+	// 1) Delete storage object via backend first to avoid storage orphans.
+	const storageResponse = await fetch(`${config.apiBaseUrl}/delete-image`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${authToken}`,
+		},
+		body: JSON.stringify({ imgName: image.imgName }),
+	});
+
+	if (!storageResponse.ok) {
+		const reason = await storageResponse.text();
+		throw new Error(reason || `Storage delete failed (HTTP ${storageResponse.status}).`);
+	}
+
+	logger.debug('Image deleted from Firebase Storage:', image.imgName);
+
+	if (!image.imgId) {
+		throw new Error('Storage deleted but Firestore document id is missing. Manual cleanup required.');
+	}
+
+	// 2) Delete Firestore metadata after storage delete succeeds.
+	const imageDocRef = db.collection(imagesDbCollection).doc(image.imgId);
 	try {
 		await imageDocRef.delete();
 		logger.debug('Firestore document deleted:', image.imgId);
-
-		// Call the backend API to delete the image from Firebase Storage
-		const response = await fetch(`${config.apiBaseUrl}/delete-image`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${authToken}`,
-			},
-			body: JSON.stringify({ imgName: image.imgName }),
-		});
-
-		if (response.ok) {
-			logger.debug('Image deleted from Firebase Storage:', image.imgName);
-		} else {
-			console.error('Error deleting image from Firebase Storage:', await response.text());
-		}
 	} catch (error) {
-		console.error('Error deleting image:', error);
+		const message = error instanceof Error ? error.message : String(error);
+		throw new Error(`Storage deleted but Firestore delete failed: ${message}`);
 	}
 };

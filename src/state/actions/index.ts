@@ -1,6 +1,9 @@
 import { ImageInterface } from 'type';
 import { ActionType } from '../actionTypes';
 
+export type AsyncFeature = 'publicGallery' | 'userGallery' | 'auth' | 'upload';
+export type AsyncStatus = 'idle' | 'loading' | 'succeeded' | 'failed';
+
 interface LoadImagesAction {
 	type: ActionType.LOAD_IMAGES;
 	imgList: ImageInterface[];
@@ -38,6 +41,13 @@ interface ClearImagesAction {
 	type: ActionType.CLEAR_IMAGES;
 }
 
+export interface SetAsyncStatusAction {
+	type: ActionType.SET_ASYNC_STATUS;
+	feature: AsyncFeature;
+	status: AsyncStatus;
+	error: string | null;
+}
+
 export type Action =
 	| LoadImagesAction
 	| LoadUserImagesAction
@@ -45,4 +55,5 @@ export type Action =
 	| ArchiveImages
 	| TogglePrivateImage
 	| SetUserUIDAction
-	| ClearImagesAction;
+	| ClearImagesAction
+	| SetAsyncStatusAction;

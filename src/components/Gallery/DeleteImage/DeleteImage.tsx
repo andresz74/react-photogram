@@ -1,31 +1,31 @@
 import React from 'react';
 import { ImageInterface } from 'type';
-import { deleteImage } from 'api';
 import { logger } from 'utils/logger';
 import './DeleteImage.css';
 
 export interface ComponentProps {
 	imgData: ImageInterface;
+	isDeleting?: boolean;
+	onDelete: (item: ImageInterface) => Promise<void>;
 }
 
-// Call the API management deleteImage function to handle image deletion
-export const handleDeleteImage = async (data: ImageInterface) => {
-	try {
-		await deleteImage(data);
-		logger.debug('Image deleted successfully', data.imgId);
-	} catch (error) {
-		console.error('Error deleting image:', error);
-	}
-};
+export const DeleteImage: React.FC<ComponentProps> = ({ imgData, isDeleting, onDelete }) => {
+	const label = isDeleting ? 'Deleting image' : 'Delete image';
 
-export const DeleteImage: React.FC<ComponentProps> = ({ imgData }) => {
 	return (
-		<div
+		<button
+			type="button"
 			className="deleteIconWrapper"
-			onClick={() => handleDeleteImage(imgData)}
+			aria-label={label}
+			title={label}
+			disabled={isDeleting}
+			onClick={(event) => {
+				event.stopPropagation();
+				onDelete(imgData).catch((error) => logger.error('Error deleting image:', error));
+			}}
 		>
-			<i className="icofont-bin" title="Delete Image"></i>
-		</div>
+			<i className="icofont-bin" aria-hidden="true"></i>
+		</button>
 	);
 };
 

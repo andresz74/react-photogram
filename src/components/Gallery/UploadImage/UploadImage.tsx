@@ -1,8 +1,10 @@
 import React, { useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { db, imagesDbCollection } from 'firebase.configuration';
 import { uploadImage } from 'api';
+import type { AppDispatch } from 'state';
+import { actionCreators } from 'state';
 import { RootState } from 'state/reducers';
 import { logger } from 'utils/logger';
 import './UploadImage.css';
@@ -26,6 +28,7 @@ export const UploadImage: React.FC = () => {
 	const [isPrivate, setIsPrivate] = useState<boolean>(false);
 
 	const userUID = useSelector((state: RootState) => state.auth.uid);
+	const dispatch = useDispatch<AppDispatch>();
 	logger.debug('User UID:', userUID);
 
 	const isBusy = status === 'uploading' || status === 'saving';
@@ -56,6 +59,7 @@ export const UploadImage: React.FC = () => {
 		setUploadStage(null);
 		setUploadPercent(0);
 		setErrorMessage(null);
+		dispatch(actionCreators.setAsyncStatus('upload', 'idle'));
 	};
 
 	React.useEffect(() => {
@@ -79,6 +83,7 @@ export const UploadImage: React.FC = () => {
 		setUploadedUrl(null);
 		setUploadStage(null);
 		setUploadPercent(0);
+		dispatch(actionCreators.setAsyncStatus('upload', 'idle'));
 
 		const validationError = validateFile(nextFile);
 		if (validationError) {
@@ -86,6 +91,7 @@ export const UploadImage: React.FC = () => {
 			setSelectedFileName(null);
 			setErrorMessage(validationError);
 			setStatus('error');
+			dispatch(actionCreators.setAsyncStatus('upload', 'failed', validationError));
 			return;
 		}
 
@@ -96,8 +102,10 @@ export const UploadImage: React.FC = () => {
 	// Handle image upload using the backend API
 	const handleUpload = async () => {
 		if (!userUID) {
-			setErrorMessage('Please log in to upload images.');
+			const message = 'Please log in to upload images.';
+			setErrorMessage(message);
 			setStatus('error');
+			dispatch(actionCreators.setAsyncStatus('upload', 'failed', message));
 			return;
 		}
 
@@ -107,6 +115,7 @@ export const UploadImage: React.FC = () => {
 		setUploadPercent(0);
 		setUploadStage('Uploading…');
 		setStatus('uploading');
+		dispatch(actionCreators.setAsyncStatus('upload', 'loading'));
 
 		try {
 			const url = await uploadImage(image, {
@@ -131,6 +140,7 @@ export const UploadImage: React.FC = () => {
 			setUploadedUrl(url);
 			setStatus('success');
 			setUploadPercent(100);
+			dispatch(actionCreators.setAsyncStatus('upload', 'succeeded'));
 			logger.debug('Image uploaded and saved');
 		} catch (error) {
 			const message = error instanceof Error ? error.message : String(error);
@@ -138,6 +148,7 @@ export const UploadImage: React.FC = () => {
 			setErrorMessage(message);
 			setUploadStage(null);
 			setStatus('error');
+			dispatch(actionCreators.setAsyncStatus('upload', 'failed', message));
 		}
 	};
 

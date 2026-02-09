@@ -42,14 +42,26 @@
     margin-right: 8px; /* Add spacing between title and close icon */
 }
 
+.modalCloseBtn {
+	background: transparent;
+	border: 0;
+	cursor: pointer;
+	padding: 0;
+	position: absolute;
+	top: 16px;
+	right: 16px;
+}
+
+.modalCloseBtn:focus-visible {
+	outline: 2px solid var(--color-white);
+	outline-offset: 2px;
+}
+
 .modalCloseIco {
     cursor: pointer;
     font-size: 2.25em; /* Slightly larger for better visibility */
     color: var(--soft);
     transition: color 0.3s;
-	position: absolute;
-	top: 16px;
-	right: 16px;
 }
 
 .modalCloseIco:hover {
