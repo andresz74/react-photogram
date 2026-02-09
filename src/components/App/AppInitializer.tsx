@@ -17,9 +17,11 @@ export const AppInitializer: React.FC = ({ children }) => {
             if (user) {
                 logger.debug('Firebase auth state:', user.uid);
                 dispatch(actionCreators.setUserUID(user.uid));  // Dispatch UID to Redux
+                dispatch(actionCreators.setAsyncStatus('auth', 'succeeded'));
             } else {
                 logger.debug('Firebase auth state: signed out');
                 dispatch(actionCreators.setUserUID(null));  // Set UID to null if no user
+                dispatch(actionCreators.setAsyncStatus('auth', 'idle'));
             }
         });
 

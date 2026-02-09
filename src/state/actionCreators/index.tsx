@@ -1,48 +1,65 @@
 import { Dispatch } from 'redux';
 import { ActionType } from '../actionTypes';
-import { Action } from '../actions';
+import { Action, AsyncFeature, AsyncStatus, SetAsyncStatusAction } from '../actions';
 import * as Api from 'api';
 import { ImageInterface } from 'type';
 import { logger } from 'utils/logger';
 
-export const loadImages = () => {
-	return (dispatch: Dispatch<Action>, getState: () => any) => {
+export const setAsyncStatus = (
+	feature: AsyncFeature,
+	status: AsyncStatus,
+	error: string | null = null,
+): SetAsyncStatusAction => ({
+	type: ActionType.SET_ASYNC_STATUS,
+	feature,
+	status,
+	error,
+});
 
-		return Api.getPublicImages()
-			.then(results => {
-				dispatch({
-					type: ActionType.LOAD_IMAGES,
-					imgList: results,
-				});
-			})
-			.catch(err => {
-				const message = err instanceof Error ? err.message : String(err);
-				console.error('Unable to load images:', err);
-				dispatch({ type: ActionType.LOAD_IMAGES_ERROR, error: `Unable to load images: ${message}` });
+export const loadImages = () => {
+	return async (dispatch: Dispatch<Action>) => {
+		dispatch(setAsyncStatus('publicGallery', 'loading'));
+
+		try {
+			const results = await Api.getPublicImages();
+			dispatch({
+				type: ActionType.LOAD_IMAGES,
+				imgList: results,
 			});
+			dispatch(setAsyncStatus('publicGallery', 'succeeded'));
+		} catch (err) {
+			const message = err instanceof Error ? err.message : String(err);
+			logger.error('Unable to load images:', err);
+			dispatch({ type: ActionType.LOAD_IMAGES_ERROR, error: `Unable to load images: ${message}` });
+			dispatch(setAsyncStatus('publicGallery', 'failed', `Unable to load images: ${message}`));
+		}
 	};
 };
 
 export const loadUserImages = (showArchived?: boolean) => {
-	return (dispatch: Dispatch<Action>, getState: () => any) => {
+	return async (dispatch: Dispatch<Action>, getState: () => any) => {
+		dispatch(setAsyncStatus('userGallery', 'loading'));
 		const { uid } = getState().auth;
 		if (!uid) {
-			console.error('User is not logged in.');
+			const error = 'User is not logged in.';
+			logger.error(error);
+			dispatch(setAsyncStatus('userGallery', 'failed', error));
 			return;
 		}
 
-		return Api.getUserImages(uid, showArchived)
-			.then(results => {
-				dispatch({
-					type: ActionType.LOAD_USER_IMAGES,
-					imgUserList: results,
-				});
-			})
-			.catch(err => {
-				const message = err instanceof Error ? err.message : String(err);
-				console.error('Unable to load user images:', err);
-				dispatch({ type: ActionType.LOAD_IMAGES_ERROR, error: `Unable to load images: ${message}` });
+		try {
+			const results = await Api.getUserImages(uid, showArchived);
+			dispatch({
+				type: ActionType.LOAD_USER_IMAGES,
+				imgUserList: results,
 			});
+			dispatch(setAsyncStatus('userGallery', 'succeeded'));
+		} catch (err) {
+			const message = err instanceof Error ? err.message : String(err);
+			logger.error('Unable to load user images:', err);
+			dispatch({ type: ActionType.LOAD_IMAGES_ERROR, error: `Unable to load images: ${message}` });
+			dispatch(setAsyncStatus('userGallery', 'failed', `Unable to load images: ${message}`));
+		}
 	};
 };
 

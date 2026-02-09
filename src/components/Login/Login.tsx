@@ -6,10 +6,12 @@ import { RootState } from 'state/reducers';
 import { auth } from 'firebase.configuration';
 import { actionCreators } from 'state';
 import type { AppDispatch } from 'state';
+import { logger } from 'utils/logger';
 import './Login.css';
 
 export const Login: React.FC = () => {
 	const uid = useSelector((state: RootState) => state.auth.uid);
+	const authRequest = useSelector((state: RootState) => state.requestStatus.auth);
 	const emailRef = React.useRef<HTMLInputElement>(null);
 	const passwordRef = React.useRef<HTMLInputElement>(null);
 	const navigate = useNavigate();
@@ -20,20 +22,32 @@ export const Login: React.FC = () => {
 	}, [uid, navigate]);
 
 	// Function to handle login and dispatch user UID
-	const LogIn = async () => {
+	const logIn = async () => {
+		const email = emailRef.current?.value?.trim() ?? '';
+		const password = passwordRef.current?.value ?? '';
+
+		if (!email || !password) {
+			dispatch(actionCreators.setAsyncStatus('auth', 'failed', 'Please provide email and password.'));
+			return;
+		}
+
+		dispatch(actionCreators.setAsyncStatus('auth', 'loading'));
+
 		try {
-			const userCredential = await auth.signInWithEmailAndPassword(emailRef.current!.value, passwordRef.current!.value);
+			const userCredential = await auth.signInWithEmailAndPassword(email, password);
 			if (userCredential) {
 				const userUID = userCredential.user?.uid;
-				// Store the UID in Redux
 				if (userUID) {
 					dispatch(actionCreators.setUserUID(userUID));
-					getUserData(userUID);
+					await getUserData(userUID);
 				}
 			}
+			dispatch(actionCreators.setAsyncStatus('auth', 'succeeded'));
 			navigate('/');
 		} catch (error) {
-			console.error(error);
+			const message = error instanceof Error ? error.message : String(error);
+			logger.error('Login failed:', error);
+			dispatch(actionCreators.setAsyncStatus('auth', 'failed', message));
 		}
 	};
 
@@ -47,8 +61,15 @@ export const Login: React.FC = () => {
 					<input ref={passwordRef} type="password" name="" id="" placeholder="Password" />
 				</div>
 				<div className="loginFormButton">
-					<button onClick={LogIn}>Login</button>
+					<button onClick={logIn} disabled={authRequest.status === 'loading'}>
+						{authRequest.status === 'loading' ? 'Logging in...' : 'Login'}
+					</button>
 				</div>
+				{authRequest.status === 'failed' && authRequest.error && (
+					<div className="loginError" role="alert">
+						{authRequest.error}
+					</div>
+				)}
 			</div>
 		</>
 	);

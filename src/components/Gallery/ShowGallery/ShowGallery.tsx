@@ -7,6 +7,7 @@ import { ArchiveImage, DeleteImage, HideImage, ModalImage, OverlayLayer } from '
 import { actionCreators } from 'state';
 import { RootState } from 'state/reducers';
 import { ImageInterface } from 'type';
+import { logger } from 'utils/logger';
 import './ShowGallery.css';
 
 export interface ComponentProps {
@@ -30,6 +31,7 @@ const ShowGalleryInternal: React.FC<ComponentProps> = ({ uid }) => {
 	const closeModal = () => setModalIsOpen(false);
 
 	const imagesData = useSelector<RootState, ImageInterface[]>((state) => (uid ? state.userImages : state.images));
+	const galleryRequest = useSelector((state: RootState) => (uid ? state.requestStatus.userGallery : state.requestStatus.publicGallery));
 
 	
 	const dispatch: AppDispatch = useDispatch();
@@ -39,7 +41,7 @@ const ShowGalleryInternal: React.FC<ComponentProps> = ({ uid }) => {
 			? dispatch(actionCreators.loadUserImages(showArchivedImages))
 			: dispatch(actionCreators.loadImages());
 
-		Promise.resolve(result).catch(error => console.error('Failed to load gallery images:', error));
+		Promise.resolve(result).catch(error => logger.error('Failed to load gallery images:', error));
 	}, [dispatch, showArchivedImages, uid]);
 
 	React.useEffect(() => {
@@ -54,7 +56,7 @@ const ShowGalleryInternal: React.FC<ComponentProps> = ({ uid }) => {
 			const shouldRemoveFromList = Boolean(uid) && !showArchivedImages && archived === false;
 			await dispatch(actionCreators.archiveImage(data, archived, shouldRemoveFromList));
 		} catch (error) {
-			console.error(error);
+			logger.error('Unable to archive image:', error);
 		}
 	};
 
@@ -62,7 +64,7 @@ const ShowGalleryInternal: React.FC<ComponentProps> = ({ uid }) => {
 		try {
 			await dispatch(actionCreators.togglePrivateImage(data, isPrivate));
 		} catch (error) {
-			console.error(error);
+			logger.error('Unable to update image privacy:', error);
 		}
 	};
 
@@ -108,6 +110,11 @@ const ShowGalleryInternal: React.FC<ComponentProps> = ({ uid }) => {
 			{deleteStatus && (
 				<div className={`galleryNotice galleryNotice${deleteStatus.kind === 'success' ? 'Success' : 'Error'}`} role="status">
 					{deleteStatus.message}
+				</div>
+			)}
+			{galleryRequest.status === 'failed' && galleryRequest.error && (
+				<div className="galleryNotice galleryNoticeError" role="alert">
+					{galleryRequest.error}
 				</div>
 			)}
 			<div className="albumRow">

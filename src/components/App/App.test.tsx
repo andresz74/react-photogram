@@ -7,6 +7,12 @@ let mockState = {
 	auth: { uid: null as string | null },
 	images: [] as unknown[],
 	userImages: [] as unknown[],
+	requestStatus: {
+		auth: { status: 'idle', error: null as string | null },
+		publicGallery: { status: 'idle', error: null as string | null },
+		userGallery: { status: 'idle', error: null as string | null },
+		upload: { status: 'idle', error: null as string | null },
+	},
 };
 
 const mockDispatch = jest.fn((action: unknown) => action);
@@ -29,6 +35,7 @@ jest.mock('state', () => {
 			archiveImage: () => ({ type: 'ARCHIVE_IMAGE' }),
 			togglePrivateImage: () => ({ type: 'TOGGLE_PRIVATE_IMAGE' }),
 			setUserUID: (uid: string | null) => ({ type: 'SET_USER_UID', uid }),
+			setAsyncStatus: () => ({ type: 'SET_ASYNC_STATUS', feature: 'auth', status: 'idle', error: null }),
 		},
 	};
 });
@@ -70,6 +77,12 @@ beforeEach(() => {
 		auth: { uid: null },
 		images: [],
 		userImages: [],
+		requestStatus: {
+			auth: { status: 'idle', error: null },
+			publicGallery: { status: 'idle', error: null },
+			userGallery: { status: 'idle', error: null },
+			upload: { status: 'idle', error: null },
+		},
 	};
 	mockDispatch.mockClear();
 	mockSignOut.mockClear();
