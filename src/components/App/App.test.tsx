@@ -34,6 +34,7 @@ jest.mock('state', () => {
 			clearImages: () => ({ type: 'CLEAR_IMAGES' }),
 			archiveImage: () => ({ type: 'ARCHIVE_IMAGE' }),
 			togglePrivateImage: () => ({ type: 'TOGGLE_PRIVATE_IMAGE' }),
+			deleteImage: () => ({ type: 'DELETE_IMAGE' }),
 			setUserUID: (uid: string | null) => ({ type: 'SET_USER_UID', uid }),
 			setAsyncStatus: () => ({ type: 'SET_ASYNC_STATUS', feature: 'auth', status: 'idle', error: null }),
 		},
@@ -104,6 +105,39 @@ test('renders gallery route with empty-state message for signed-out users', asyn
 	expect(screen.queryByRole('link', { name: 'Upload' })).not.toBeInTheDocument();
 });
 
+test('renders public gallery images from mapped backend image URLs', async () => {
+	mockState.images = [
+		{
+			imgArchived: false,
+			imgDescription: 'A backend image',
+			imgId: 'image-1',
+			imgLikes: 0,
+			imgName: 'Backend image',
+			imgPrivate: false,
+			imgSrc: 'https://cdn.test/image-1.jpg',
+			imgUploadDate: Date.parse('2026-06-22T12:00:00.000Z'),
+			imgUserOwner: 'owner-1',
+		},
+	];
+
+	renderAppAt('/');
+
+	const image = await screen.findByRole('img', { name: 'Backend image' });
+	expect(image).toHaveAttribute('src', 'https://cdn.test/image-1.jpg');
+	expect(screen.getByRole('link', { name: 'Login' })).toBeInTheDocument();
+});
+
+test('renders public gallery error state', async () => {
+	mockState.requestStatus.publicGallery = {
+		status: 'failed',
+		error: 'Unable to load images: API unavailable',
+	};
+
+	renderAppAt('/');
+
+	expect(await screen.findByRole('alert')).toHaveTextContent('Unable to load images: API unavailable');
+});
+
 test('renders login route and login form fields', async () => {
 	renderAppAt('/login');
 
@@ -126,6 +160,53 @@ test('redirects signed-out users from my gallery to login with next path', async
 	expect(await screen.findByPlaceholderText('Email')).toBeInTheDocument();
 	expect(window.location.pathname).toBe('/login');
 	expect(window.location.search).toContain('next=%2Fmygallery');
+});
+
+test('renders my gallery empty state for authenticated users', async () => {
+	mockAuthUser = { uid: 'user-123' };
+	mockState.auth.uid = 'user-123';
+
+	renderAppAt('/mygallery');
+
+	expect(await screen.findByText('No images available')).toBeInTheDocument();
+	expect(screen.getByText('Show Archived')).toBeInTheDocument();
+});
+
+test('renders my gallery images from mapped backend image URLs', async () => {
+	mockAuthUser = { uid: 'user-123' };
+	mockState.auth.uid = 'user-123';
+	mockState.userImages = [
+		{
+			imgArchived: false,
+			imgDescription: 'A backend user image',
+			imgId: 'user-image-1',
+			imgLikes: 0,
+			imgName: 'My backend image',
+			imgPrivate: true,
+			imgSrc: 'https://cdn.test/user-image-1.jpg',
+			imgUploadDate: Date.parse('2026-06-23T12:00:00.000Z'),
+			imgUserOwner: 'user-123',
+		},
+	];
+
+	renderAppAt('/mygallery');
+
+	const image = await screen.findByRole('img', { name: 'My backend image' });
+	expect(image).toHaveAttribute('src', 'https://cdn.test/user-image-1.jpg');
+	expect(screen.getByText('Show Archived')).toBeInTheDocument();
+});
+
+test('renders my gallery error state', async () => {
+	mockAuthUser = { uid: 'user-123' };
+	mockState.auth.uid = 'user-123';
+	mockState.requestStatus.userGallery = {
+		status: 'failed',
+		error: 'Unable to load images: API unavailable',
+	};
+
+	renderAppAt('/mygallery');
+
+	expect(await screen.findByRole('alert')).toHaveTextContent('Unable to load images: API unavailable');
 });
 
 test('shows authenticated menu items when auth user exists', async () => {

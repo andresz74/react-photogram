@@ -2,7 +2,6 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from 'state/store';
 import { useLocation } from 'react-router-dom';
-import { deleteImage } from 'api';
 import { ArchiveImage, DeleteImage, HideImage, ModalImage, OverlayLayer } from 'components';
 import { actionCreators } from 'state';
 import { RootState } from 'state/reducers';
@@ -77,12 +76,11 @@ const ShowGalleryInternal: React.FC<ComponentProps> = ({ uid }) => {
 	};
 
 	const handleDeleteImage = async (data: ImageInterface) => {
-		const imageId = data.imgId ?? data.imgName;
-		setIsDeletingId(imageId);
+		setIsDeletingId(data.imgId ?? null);
 		setDeleteStatus(null);
 
 		try {
-			await deleteImage(data);
+			await dispatch(actionCreators.deleteImage(data));
 			await refreshGallery();
 			setDeleteStatus({ kind: 'success', message: 'Image deleted successfully.' });
 		} catch (error) {

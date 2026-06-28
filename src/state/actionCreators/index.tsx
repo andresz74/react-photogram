@@ -4,7 +4,36 @@ import { Action, AsyncFeature, AsyncStatus, SetAsyncStatusAction } from '../acti
 import * as Api from 'api';
 import { ImageInterface } from 'type';
 import { logger } from 'utils/logger';
-import { RootState } from '../reducers';
+import { auth } from 'firebase.configuration';
+
+const mapPhotogramImageToImageInterface = (image: Api.PhotogramImage): ImageInterface => ({
+	imgId: image.id,
+	imgArchived: Boolean(image.isArchived),
+	imgDescription: image.description ?? '',
+	imgLikes: 0,
+	imgName: image.title ?? image.id,
+	imgPrivate: !image.isPublic,
+	imgSrc: image.imageUrl,
+	imgUploadDate: Date.parse(image.createdAt) || 0,
+	imgUserOwner: image.ownerId ?? '',
+});
+
+const getCurrentUserIdToken = async () => {
+	const currentUser = auth.currentUser;
+	if (!currentUser) {
+		throw new Error('User is not logged in.');
+	}
+
+	return currentUser.getIdToken();
+};
+
+const getImageId = (image: ImageInterface, action: string) => {
+	if (!image.imgId?.trim()) {
+		throw new Error(`Missing image id. Cannot ${action} image.`);
+	}
+
+	return image.imgId;
+};
 
 export const setAsyncStatus = (
 	feature: AsyncFeature,
@@ -22,10 +51,10 @@ export const loadImages = () => {
 		dispatch(setAsyncStatus('publicGallery', 'loading'));
 
 		try {
-			const results = await Api.getPublicImages();
+			const results = await Api.listPublicImages();
 			dispatch({
 				type: ActionType.LOAD_IMAGES,
-				imgList: results,
+				imgList: results.map(mapPhotogramImageToImageInterface),
 			});
 			dispatch(setAsyncStatus('publicGallery', 'succeeded'));
 		} catch (err) {
@@ -38,10 +67,11 @@ export const loadImages = () => {
 };
 
 export const loadUserImages = (showArchived?: boolean) => {
-	return async (dispatch: Dispatch<Action>, getState: () => RootState) => {
+	return async (dispatch: Dispatch<Action>) => {
 		dispatch(setAsyncStatus('userGallery', 'loading'));
-		const { uid } = getState().auth;
-		if (!uid) {
+
+		const currentUser = auth.currentUser;
+		if (!currentUser) {
 			const error = 'User is not logged in.';
 			logger.error(error);
 			dispatch(setAsyncStatus('userGallery', 'failed', error));
@@ -49,10 +79,11 @@ export const loadUserImages = (showArchived?: boolean) => {
 		}
 
 		try {
-			const results = await Api.getUserImages(uid, showArchived);
+			const idToken = await currentUser.getIdToken();
+			const results = await Api.listMyImages(showArchived ? { idToken, archived: true } : { idToken });
 			dispatch({
 				type: ActionType.LOAD_USER_IMAGES,
-				imgUserList: results,
+				imgUserList: results.map(mapPhotogramImageToImageInterface),
 			});
 			dispatch(setAsyncStatus('userGallery', 'succeeded'));
 		} catch (err) {
@@ -75,10 +106,18 @@ export const clearImages = () => {
 
 export const archiveImage = (image: ImageInterface, imgArchived: boolean, removeFromList?: boolean) => {
 	return async (dispatch: Dispatch<Action>) => {
-		await Api.archiveImage(image, imgArchived);
+		const imageId = getImageId(image, 'archive');
+		const idToken = await getCurrentUserIdToken();
+
+		if (imgArchived) {
+			await Api.unarchiveImageById({ imageId, idToken });
+		} else {
+			await Api.archiveImageById({ imageId, idToken });
+		}
+
 		dispatch({
 			type: ActionType.ARCHIVE_IMAGE,
-			imgId: image.imgId,
+			imgId: imageId,
 			imgArchived: !imgArchived,
 			removeFromList,
 		});
@@ -87,11 +126,30 @@ export const archiveImage = (image: ImageInterface, imgArchived: boolean, remove
 
 export const togglePrivateImage = (image: ImageInterface, isPrivate: boolean) => {
 	return async (dispatch: Dispatch<Action>) => {
-		await Api.setImagePrivacy(image, isPrivate);
+		const imageId = getImageId(image, 'update visibility for');
+		const idToken = await getCurrentUserIdToken();
+
+		await Api.updateImageVisibility({
+			imageId,
+			idToken,
+			isPublic: isPrivate,
+		});
+
 		dispatch({
 			type: ActionType.TOGGLE_PRIVATE_IMAGE,
-			imgId: image.imgId,
+			imgId: imageId,
 			imgPrivate: !isPrivate,
+		});
+	};
+};
+
+export const deleteImage = (image: ImageInterface) => {
+	return async (_dispatch: Dispatch<Action>) => {
+		const imageId = getImageId(image, 'delete');
+		const idToken = await getCurrentUserIdToken();
+		await Api.deleteImage({
+			imageId,
+			idToken,
 		});
 	};
 };
