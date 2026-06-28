@@ -60,7 +60,7 @@ yarn test --watchAll=false
 yarn build
 ```
 
-`yarn start` runs the frontend at `http://localhost:3000`.
+`yarn start` runs the frontend at `http://localhost:3000`. Use Yarn for dependency management (`yarn.lock` is the canonical lockfile).
 
 ## Migrated Frontend Flows
 ```text
