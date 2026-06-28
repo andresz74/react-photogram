@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { db, imagesDbCollection } from 'firebase.configuration';
+import { auth } from 'firebase.configuration';
 import { uploadImage } from 'api';
 import type { AppDispatch } from 'state';
 import { actionCreators } from 'state';
@@ -11,8 +11,8 @@ import './UploadImage.css';
 
 const MAX_UPLOAD_BYTES = 10 * 1024 * 1024; // 10MB
 
-type UploadStatus = 'idle' | 'uploading' | 'saving' | 'success' | 'error';
-type UploadStageLabel = 'Uploading…' | 'Processing…' | null;
+type UploadStatus = 'idle' | 'uploading' | 'success' | 'error';
+type UploadStageLabel = 'Uploading…' | null;
 
 export const UploadImage: React.FC = () => {
 	const inputIdRef = React.useRef(`fileInput-${Math.random().toString(36).slice(2)}`);
@@ -31,7 +31,7 @@ export const UploadImage: React.FC = () => {
 	const dispatch = useDispatch<AppDispatch>();
 	logger.debug('User UID:', userUID);
 
-	const isBusy = status === 'uploading' || status === 'saving';
+	const isBusy = status === 'uploading';
 	const canUpload = Boolean(userUID) && Boolean(image) && !isBusy;
 
 	const fileMeta = useMemo(() => {
@@ -111,6 +111,15 @@ export const UploadImage: React.FC = () => {
 
 		if (!image || isBusy) return;
 
+		const currentUser = auth.currentUser;
+		if (!currentUser) {
+			const message = 'Please log in to upload images.';
+			setErrorMessage(message);
+			setStatus('error');
+			dispatch(actionCreators.setAsyncStatus('upload', 'failed', message));
+			return;
+		}
+
 		setErrorMessage(null);
 		setUploadPercent(0);
 		setUploadStage('Uploading…');
@@ -118,30 +127,21 @@ export const UploadImage: React.FC = () => {
 		dispatch(actionCreators.setAsyncStatus('upload', 'loading'));
 
 		try {
-			const url = await uploadImage(image, {
-				onProgress: setUploadPercent,
-				onStage: (stage) => setUploadStage(stage === 'uploading' ? 'Uploading…' : 'Processing…'),
+			const idToken = await currentUser.getIdToken();
+			const uploadedImage = await uploadImage({
+				file: image,
+				idToken,
+				description: imageDescription || undefined,
+				isPublic: !isPrivate,
 			});
-			if (!url) throw new Error('Upload failed.');
+			if (!uploadedImage.imageUrl) throw new Error('Upload failed.');
 
 			setUploadStage(null);
-			setStatus('saving');
-			await db.collection(imagesDbCollection).add({
-				imgArchived: false,
-				imgDescription: imageDescription || '',
-				imgLikes: 0,
-				imgName: image.name,
-				imgPrivate: isPrivate,
-				imgSrc: url,
-				imgUploadDate: Date.now(),
-				imgUserOwner: userUID,
-			});
-
-			setUploadedUrl(url);
+			setUploadedUrl(uploadedImage.imageUrl);
 			setStatus('success');
 			setUploadPercent(100);
 			dispatch(actionCreators.setAsyncStatus('upload', 'succeeded'));
-			logger.debug('Image uploaded and saved');
+			logger.debug('Image uploaded');
 		} catch (error) {
 			const message = error instanceof Error ? error.message : String(error);
 			logger.error('Error uploading image:', error);
@@ -264,8 +264,6 @@ export const UploadImage: React.FC = () => {
 					<div className="progressBarWrap">
 						{status === 'uploading' ? (
 							<progress className="progressBar" value={uploadPercent} max={100} />
-						) : status === 'saving' ? (
-							<progress className="progressBar" />
 						) : status === 'success' ? (
 							<progress className="progressBar" value={100} max={100} />
 						) : (
@@ -275,7 +273,7 @@ export const UploadImage: React.FC = () => {
 
 					<div className="buttonWrap">
 						<button className="buttonMain" onClick={handleUpload} disabled={!canUpload}>
-							{status === 'uploading' ? 'Uploading…' : status === 'saving' ? 'Saving…' : 'Upload'}
+							{status === 'uploading' ? 'Uploading…' : 'Upload'}
 						</button>
 						<button
 							type="button"
