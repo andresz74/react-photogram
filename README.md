@@ -31,6 +31,8 @@ REACT_APP_FIREBASE_MEASUREMENT_ID=...
 REACT_APP_API_URL=http://localhost:3003
 ```
 
+`REACT_APP_API_URL` is the frontend's backend API boundary. Backend provider settings such as `DATABASE_PROVIDER`, `STORAGE_PROVIDER`, `AUTH_PROVIDER`, `SQLITE_PATH`, and `LOCAL_STORAGE_ROOT` belong only in the backend environment.
+
 ## Scripts
 - `yarn start`: run local dev server at `http://localhost:3000`
 - `yarn test`: run Jest/RTL tests
@@ -45,5 +47,5 @@ REACT_APP_API_URL=http://localhost:3003
 
 ## Notes
 - This repository contains the frontend application.
-- The image upload/delete API is consumed via `REACT_APP_API_URL` and is expected to run separately.
+- The gallery, upload, and delete MVP flows call the backend through `REACT_APP_API_URL`.
 - Use Yarn for dependency management (`yarn.lock` is the canonical lockfile).
