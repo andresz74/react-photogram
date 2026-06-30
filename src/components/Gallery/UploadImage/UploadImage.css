@@ -26,6 +26,7 @@
 	display: flex;
 	flex: 1 0 100%;
 }
+
 .headerCloseBtn {
 	display: flex;
 	font-size: 1.5em;
@@ -38,26 +39,277 @@
 .uploadToolBody {
 	display: flex;
 	flex-direction: column;
-	padding: 40px 30px;
 	gap: 16px;
+	padding: 40px 30px;
 }
 
 .uploadNotice {
-	padding: 12px;
+	background: var(--color-surface-alt);
 	border: 1px solid var(--soft-transparent-25);
 	border-radius: 8px;
-	background: var(--color-surface-alt);
+	padding: 12px;
 	text-align: left;
 }
 
 .uploadNoticeText {
-	margin: 0 0 8px;
 	color: var(--color-text-strong);
+	margin: 0 0 8px;
 }
 
 .uploadNoticeLink {
 	color: var(--strong-blue);
 	text-decoration: underline;
+}
+
+.uploadSection {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.inputFile {
+	height: 1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	width: 1px;
+	z-index: -1;
+}
+
+.dropZone {
+	background: var(--color-surface);
+	border: 1px dashed var(--low-blue);
+	border-radius: 10px;
+	cursor: pointer;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	outline: none;
+	padding: 14px;
+}
+
+.dropZone:focus-visible {
+	box-shadow: 0 0 0 3px var(--low-blue-transparent-50);
+}
+
+.dropZoneEmpty {
+	align-items: center;
+	justify-content: center;
+	min-height: 340px;
+	padding: 34px 28px;
+	text-align: center;
+}
+
+.dropZoneCompact {
+	min-height: 116px;
+}
+
+.dropZoneIcon {
+	align-items: center;
+	background: var(--color-white);
+	border-radius: 16px;
+	box-shadow: var(--shadow-soft);
+	color: var(--low-blue-transparent-75);
+	display: inline-flex;
+	font-size: 3.5rem;
+	height: 82px;
+	justify-content: center;
+	margin-bottom: 16px;
+	position: relative;
+	transform: rotate(-8deg);
+	width: 82px;
+}
+
+.dropZoneUploadBadge {
+	align-items: center;
+	background: var(--strong-blue);
+	border-radius: 999px;
+	bottom: -8px;
+	color: var(--color-white);
+	display: inline-flex;
+	font-size: 1.25rem;
+	height: 34px;
+	justify-content: center;
+	position: absolute;
+	right: -10px;
+	transform: rotate(8deg);
+	width: 34px;
+}
+
+.dropZonePrimary {
+	color: var(--color-text-strong);
+	font-size: 1rem;
+}
+
+.dropZonePrimary span {
+	color: var(--strong-blue);
+	text-decoration: underline;
+}
+
+.dropZoneHelper,
+.dropZoneHint {
+	color: var(--color-text-muted);
+	font-size: 0.875rem;
+}
+
+.fileMeta {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.fileName {
+	color: var(--blue);
+	font-size: 0.875rem;
+	margin-top: 6px;
+	text-align: left;
+	word-break: break-word;
+}
+
+.fileDetails {
+	color: var(--color-text-muted);
+	font-size: 0.8125rem;
+	text-align: center;
+}
+
+.customFileInputLabel {
+	background-color: var(--blue);
+	border: none;
+	border-radius: 4px;
+	color: var(--color-white);
+	display: inline-block;
+	font-size: 1rem;
+	padding: 10px 20px;
+	text-align: center;
+	transition: background-color 0.3s ease;
+}
+
+.customFileInputLabel:hover {
+	background-color: var(--strong-blue);
+}
+
+.previewWrap,
+.successState {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.filePreview {
+	border-radius: 0.25em;
+	box-shadow: var(--shadow-soft);
+	height: auto;
+	max-height: 320px;
+	object-fit: cover;
+	width: 100%;
+}
+
+.metadataPanel {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.descriptionWrap {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	text-align: left;
+}
+
+.fieldLabel {
+	color: var(--color-text-strong);
+	font-size: 0.875rem;
+}
+
+.fieldHelp {
+	color: var(--color-text-muted);
+	font-size: 0.8125rem;
+	text-align: right;
+}
+
+.textareaDescription,
+.inputText {
+	background-color: var(--color-surface);
+	border: 1px solid var(--low-blue);
+	border-radius: 8px;
+	color: var(--strong-blue);
+	outline: none;
+	padding: 8px;
+}
+
+.textareaDescription {
+	height: 96px;
+	overflow: auto;
+	resize: none;
+}
+
+.inputText {
+	height: 42px;
+}
+
+.toggleRow {
+	display: flex;
+	justify-content: flex-start;
+}
+
+.toggleLabel {
+	align-items: center;
+	color: var(--color-text-strong);
+	display: inline-flex;
+	font-size: 0.875rem;
+	gap: 10px;
+}
+
+.buttonWrap {
+	display: flex;
+	gap: 10px;
+	justify-content: flex-start;
+	margin-bottom: 2em;
+}
+
+.uploadToolWrap .buttonMain {
+	align-items: center;
+	display: inline-flex;
+	gap: 8px;
+}
+
+.uploadToolWrap .buttonMain:disabled {
+	background-color: var(--strong-blue-transparent-25);
+	color: var(--color-text-muted);
+	cursor: not-allowed;
+}
+
+.uploadSection[aria-busy='true'] .buttonMain {
+	cursor: progress;
+}
+
+.uploadSection[aria-busy='true'] .buttonMain::after {
+	animation: uploadSpin 700ms linear infinite;
+	border: 2px solid rgba(255, 255, 255, 0.45);
+	border-radius: 999px;
+	border-top-color: rgba(255, 255, 255, 0.95);
+	content: '';
+	height: 14px;
+	width: 14px;
+}
+
+.buttonSecondary {
+	background-color: transparent;
+	border: 1px solid var(--low-blue);
+	border-radius: 0.25em;
+	color: var(--strong-blue);
+	padding: 0.75em 1em;
+	text-transform: uppercase;
+}
+
+.buttonSecondary:disabled {
+	cursor: not-allowed;
+	opacity: 0.6;
+}
+
+.buttonFull {
+	width: 100%;
 }
 
 .progressBarWrap {
@@ -81,211 +333,22 @@
 	border-radius: 4px;
 }
 
-.inputFileWrap {
-	cursor: pointer;
-	display: flex;
-	flex-direction: column;
-	margin-bottom: 2em;
-	position: relative;
-}
-
-.inputFile {
-	opacity: 0;
-	    position: absolute;
-	    z-index: -1;
-}
-
-.dropZone {
-	border: 1px dashed var(--low-blue);
-	border-radius: 10px;
-	padding: 14px;
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-	background: var(--color-surface);
-}
-
-.dropZoneHint {
-	font-size: 0.875rem;
-	color: var(--color-text-muted);
-}
-
-.fileMeta {
-	display: flex;
-	flex-direction: column;
-	gap: 2px;
-}
-
-.fileDetails {
-	font-size: 0.8125rem;
-	color: var(--color-text-muted);
-}
-
-/* Style the label to act as the button */
-.customFileInputLabel {
-	    display: inline-block;
-	    padding: 10px 20px;
-    color: var(--color-white);
-    background-color: var(--blue);
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    text-align: center;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-}
-
-/* Hover effect */
-.customFileInputLabel:hover {
-    background-color: var(--strong-blue);
-}
-
-/* Optional: Style when a file is selected */
-/* .customFileInputLabel:after {
-    content: '';
-    display: block;
-    margin-top: 8px;
-    font-size: 0.875rem;
-    color: var(--color-text-muted);
-} */
-
-.fileName {
-	    color: var(--blue);
-	    font-size: 0.875rem;
-	    margin-top: 8px;
-	    text-align: left;
-		word-break: break-word;
-}
-
-.previewWrap {
-	display: flex;
-	flex-direction: column;
-	gap: 12px;
-}
-
-.descriptionWrap {
-	display: flex;
-	flex-direction: column;
-	gap: 6px;
-	margin-bottom: 0.5rem;
-	text-align: left;
-}
-
-.fieldLabel {
-	font-size: 0.875rem;
-	color: var(--color-text-strong);
-}
-
-.fieldHelp {
-	font-size: 0.8125rem;
-	color: var(--color-text-muted);
-	text-align: right;
-}
-
-.textareaDescription {
-	background-color: var(--color-surface);
-	border: 1px solid var(--low-blue);
-	color: var(--strong-blue);
-	display: flex;
-	flex: 1;
-	height: 200px;
-	outline: none;
-	overflow: auto;
-	padding: 8px;
-	resize: none;
-	border-radius: 8px;
-}
-
-.buttonWrap {
-	margin-bottom: 2em;
-	display: flex;
-	gap: 10px;
-	justify-content: flex-start;
-}
-
-.uploadToolWrap .buttonMain {
-	display: inline-flex;
-	align-items: center;
-	gap: 8px;
-}
-
-.uploadToolWrap .buttonMain:disabled {
-	background-color: var(--strong-blue-transparent-25);
-	color: var(--color-text-muted);
-	cursor: not-allowed;
-}
-
-.uploadSection[aria-busy='true'] .buttonMain {
-	cursor: progress;
-}
-
-.uploadSection[aria-busy='true'] .buttonMain::after {
-	content: '';
-	width: 14px;
-	height: 14px;
-	border-radius: 999px;
-	border: 2px solid rgba(255, 255, 255, 0.45);
-	border-top-color: rgba(255, 255, 255, 0.95);
-	animation: uploadSpin 700ms linear infinite;
-}
-
-.uploadToolWrap .buttonSecondary:disabled {
-	opacity: 0.6;
-	cursor: not-allowed;
-}
-
-.buttonSecondary {
-	background-color: transparent;
-	border: 1px solid var(--low-blue);
-	border-radius: 0.25em;
-	color: var(--strong-blue);
-	padding: 0.75em 1.0em;
-	text-transform: uppercase;
-}
-
-.buttonSecondary:disabled {
-	opacity: 0.6;
-	cursor: not-allowed;
-}
-
-.filePreview {
-	border-radius: 0.25em;
-	box-shadow: var(--shadow-soft);
-	height: auto;
-	width: 100%;
-	max-height: 320px;
-	object-fit: cover;
-}
-
-.toggleRow {
-	display: flex;
-	justify-content: flex-start;
-}
-
-.toggleLabel {
-	display: inline-flex;
-	align-items: center;
-	gap: 10px;
-	font-size: 0.875rem;
-	color: var(--color-text-strong);
-}
-
 .uploadError {
-	border: 1px solid rgba(255, 0, 0, 0.35);
 	background: rgba(255, 0, 0, 0.06);
+	border: 1px solid rgba(255, 0, 0, 0.35);
+	border-radius: 8px;
 	color: var(--color-text-strong);
 	padding: 10px 12px;
-	border-radius: 8px;
 	text-align: left;
 }
 
 .uploadStageRow {
-	display: flex;
 	align-items: center;
-	justify-content: space-between;
-	gap: 10px;
-	font-size: 0.875rem;
 	color: var(--color-text-muted);
+	display: flex;
+	font-size: 0.875rem;
+	gap: 10px;
+	justify-content: space-between;
 	margin-top: 4px;
 }
 
@@ -304,9 +367,15 @@
 	text-align: left;
 }
 
+.uploadedTags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
 .uploadSuccess {
-	font-weight: 600;
 	color: var(--strong-blue);
+	font-weight: 600;
 }
 
 .uploadedLink {

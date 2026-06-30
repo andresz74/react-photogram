@@ -204,6 +204,7 @@ test('uploadImage calls POST /images with Authorization and FormData body', asyn
 		title: 'Title',
 		description: 'Description',
 		isPublic: false,
+		tags: ['dog', 'golden retriever', 'New York'],
 	});
 
 	expect(fetchMock()).toHaveBeenCalledTimes(1);
@@ -217,7 +218,27 @@ test('uploadImage calls POST /images with Authorization and FormData body', asyn
 	expect(body.get('title')).toBe('Title');
 	expect(body.get('description')).toBe('Description');
 	expect(body.get('isPublic')).toBe('false');
+	expect(body.get('tags')).toBe(JSON.stringify(['dog', 'golden retriever', 'New York']));
 	expect(init.headers).not.toHaveProperty('Content-Type');
+});
+
+test('uploadImage omits tags field when missing', async () => {
+	const file = new File(['photo'], 'photo.jpg', { type: 'image/jpeg' });
+	global.fetch = jest.fn().mockResolvedValue(makeResponse({
+		body: {
+			image: {
+				id: 'image-1',
+				imageUrl: 'https://cdn.test/image-1.jpg',
+				isPublic: true,
+				createdAt: '2026-06-22T00:00:00.000Z',
+			},
+		},
+	})) as jest.Mock;
+
+	await uploadImage({ file, idToken: 'token-1' });
+
+	const init = fetchMock().mock.calls[0][1] as RequestInit;
+	expect((init.body as FormData).has('tags')).toBe(false);
 });
 
 test('uploadImage appends isPublic as true string when provided', async () => {

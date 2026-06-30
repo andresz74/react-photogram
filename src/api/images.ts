@@ -34,6 +34,8 @@ export interface PhotogramImage {
 	isPublic: boolean;
 	isArchived?: boolean;
 	archivedAt?: string;
+	tags?: string[];
+	tagSlugs?: string[];
 	createdAt: string;
 	updatedAt?: string;
 }
@@ -49,6 +51,7 @@ export interface UploadImageInput {
 	title?: string;
 	description?: string;
 	isPublic?: boolean;
+	tags?: string[];
 }
 
 export interface AuthenticatedImageRequest {
@@ -236,6 +239,7 @@ const uploadPhotogramImage = async (input: UploadImageInput): Promise<PhotogramI
 	if (input.title !== undefined) formData.append('title', input.title);
 	if (input.description !== undefined) formData.append('description', input.description);
 	if (input.isPublic !== undefined) formData.append('isPublic', String(input.isPublic));
+	if (input.tags !== undefined) formData.append('tags', JSON.stringify(input.tags));
 
 	const response = await requestJson<{ image?: PhotogramImage }>(buildApiUrl('/images'), {
 		method: 'POST',

@@ -14,6 +14,8 @@ const mapPhotogramImageToImageInterface = (image: Api.PhotogramImage): ImageInte
 	imgName: image.title ?? image.id,
 	imgPrivate: !image.isPublic,
 	imgSrc: image.imageUrl,
+	imgTags: image.tags ?? [],
+	imgTagSlugs: image.tagSlugs ?? [],
 	imgUploadDate: Date.parse(image.createdAt) || 0,
 	imgUserOwner: image.ownerId ?? '',
 });
