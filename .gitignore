@@ -25,3 +25,6 @@ firebase-debug.log
 
 #environment variables
 .env
+
+# Local Playwright MCP artifacts
+.playwright-mcp/
