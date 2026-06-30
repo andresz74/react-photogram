@@ -6,6 +6,8 @@ export interface ImageInterface {
 	imgName: string;
 	imgPrivate: boolean;
 	imgSrc: string;
+	imgTags?: string[];
+	imgTagSlugs?: string[];
 	imgUploadDate: number;
 	imgUserOwner: string;
 }

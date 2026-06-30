@@ -1,0 +1,88 @@
+.tagInputWrap {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	text-align: left;
+}
+
+.tagInputBox {
+	align-items: center;
+	background-color: var(--color-surface);
+	border: 1px solid var(--low-blue);
+	border-radius: 8px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	min-height: 42px;
+	padding: 6px 8px;
+}
+
+.tagInputBox:focus-within {
+	box-shadow: 0 0 0 3px var(--low-blue-transparent-50);
+}
+
+.tagInputBoxDisabled {
+	opacity: 0.65;
+}
+
+.tagInputField {
+	background: transparent;
+	border: 0;
+	color: var(--strong-blue);
+	flex: 1 1 140px;
+	font: inherit;
+	min-width: 120px;
+	outline: none;
+	padding: 4px 0;
+}
+
+.tagChip {
+	align-items: center;
+	background: var(--low-blue-transparent-50);
+	border: 1px solid var(--low-blue);
+	border-radius: 999px;
+	color: var(--strong-blue);
+	display: inline-flex;
+	font-size: 0.8125rem;
+	gap: 6px;
+	line-height: 1;
+	padding: 6px 8px 6px 10px;
+}
+
+.tagRemoveButton {
+	align-items: center;
+	background: transparent;
+	border: 0;
+	border-radius: 999px;
+	color: var(--strong-blue);
+	cursor: pointer;
+	display: inline-flex;
+	font-size: 1rem;
+	height: 18px;
+	justify-content: center;
+	line-height: 1;
+	padding: 0;
+	width: 18px;
+}
+
+.tagRemoveButton:hover,
+.tagRemoveButton:focus-visible {
+	background: var(--strong-blue-transparent-25);
+}
+
+.tagRemoveButton:disabled {
+	cursor: not-allowed;
+}
+
+.tagInputMeta {
+	color: var(--color-text-muted);
+	display: flex;
+	font-size: 0.8125rem;
+	gap: 10px;
+	justify-content: space-between;
+}
+
+.tagInputError {
+	color: var(--red);
+	font-size: 0.8125rem;
+}
